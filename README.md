@@ -1,1 +1,2 @@
-# Docs Branch\nProject documentation lives here.
+# Docs Branch
+Project documentation lives here.
