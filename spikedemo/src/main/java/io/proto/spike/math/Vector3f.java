@@ -50,7 +50,7 @@ public class Vector3f {
 
     public Vector3f normalize() {
         float len = length();
-        return len != 0 ? scale(1.0f / len) : new Vector3f(0, 0, 0);
+        return len != 0 ? scale(1.0f / len) : this;
     }
 
     public Vector3f negate() {
@@ -68,9 +68,9 @@ public class Vector3f {
     public boolean equals(Object obj) {
         if (!(obj instanceof Vector3f)) return false;
         Vector3f v = (Vector3f) obj;
-        return Float.compare(x, v.x) == 0 &&
-                Float.compare(y, v.y) == 0 &&
-                Float.compare(z, v.z) == 0;
+        return Float.compare(x + 0f, v.x + 0f) == 0 &&
+                Float.compare(y + 0f, v.y + 0f) == 0 &&
+                Float.compare(z + 0f, v.z + 0f) == 0;
     }
 
     @Override

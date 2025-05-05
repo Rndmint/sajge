@@ -40,7 +40,7 @@ public class Vector2f {
 
     public Vector2f normalize() {
         float len = length();
-        return len != 0 ? scale(1.0f / len) : new Vector2f(0, 0);
+        return len != 0 ? scale(1.0f / len) : this;
     }
 
     public float distance(Vector2f v) {
@@ -57,7 +57,7 @@ public class Vector2f {
     public boolean equals(Object obj) {
         if (!(obj instanceof Vector2f)) return false;
         Vector2f v = (Vector2f) obj;
-        return Float.compare(x, v.x) == 0 && Float.compare(y, v.y) == 0;
+        return Float.compare(x + 0f, v.x + 0f) == 0 && Float.compare(y + 0f, v.y + 0f) == 0;
     }
 
     @Override

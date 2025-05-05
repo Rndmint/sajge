@@ -111,10 +111,33 @@ class Matrix4x4fTest {
     }
 
     @Test
-    void testInverse() {
+    void testInverseNotNull() {
         Matrix4x4f matrix = new Matrix4x4f(1, 2, 3, 4, 0, 5, 6, 7, 0, 0, 8, 9, 0, 0, 0, 10);
         Matrix4x4f inverse = matrix.inverse();
         assertNotNull(inverse);
+    }
+
+    @Test
+    void testInverse() {
+        Matrix4x4f matrix = new Matrix4x4f(1, 2, 3, 4, 0, 5, 6, 7, 0, 0, 8, 9, 0, 0, 0, 10);
+        Matrix4x4f expected = new Matrix4x4f(1, -2f/5f, -3f/40f, -21f/400f, 0, 1f/5f, -3f/20f, -1f/200f, 0, 0, 1f/8f, -9f/80f, 0, 0, 0, 1f/10f);
+        Matrix4x4f inverse = matrix.inverse();
+        assertEquals(expected.m00, inverse.m00, 0.001f);
+        assertEquals(expected.m11, inverse.m11, 0.001f);
+        assertEquals(expected.m22, inverse.m22, 0.001f);
+        assertEquals(expected.m33, inverse.m33, 0.001f);
+        assertEquals(expected.m01, inverse.m01, 0.001f);
+        assertEquals(expected.m02, inverse.m02, 0.001f);
+        assertEquals(expected.m03, inverse.m03, 0.001f);
+        assertEquals(expected.m10, inverse.m10, 0.001f);
+        assertEquals(expected.m12, inverse.m12, 0.001f);
+        assertEquals(expected.m13, inverse.m13, 0.001f);
+        assertEquals(expected.m20, inverse.m20, 0.001f);
+        assertEquals(expected.m21, inverse.m21, 0.001f);
+        assertEquals(expected.m23, inverse.m23, 0.001f);
+        assertEquals(expected.m30, inverse.m30, 0.001f);
+        assertEquals(expected.m31, inverse.m31, 0.001f);
+        assertEquals(expected.m32, inverse.m32, 0.001f);
     }
 
     @Test
@@ -131,8 +154,8 @@ class Matrix4x4fTest {
 
         assertEquals(m1, m2);
         assertNotEquals(m1, m3);
-        assertNotEquals(m1, null);
-        assertNotEquals(m1, "some string");
+        assertNotEquals(null, m1);
+        assertNotEquals("some string", m1);
     }
 
     @Test

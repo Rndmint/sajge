@@ -109,8 +109,8 @@ class Vector3fTest {
 
         assertEquals(v1, v2);
         assertNotEquals(v1, v3);
-        assertNotEquals(v1, null);
-        assertNotEquals(v1, "miw");
+        assertNotEquals(null, v1);
+        assertNotEquals("miw", v1);
     }
 
     @Test

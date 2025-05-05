@@ -121,8 +121,8 @@ class Matrix3x3fTest {
 
         assertEquals(m1, m2);
         assertNotEquals(m1, m3);
-        assertNotEquals(m1, null);
-        assertNotEquals(m1, "some string");
+        assertNotEquals(null, m1);
+        assertNotEquals("some string", m1);
     }
 
     @Test

@@ -96,11 +96,14 @@ class Vector2fTest {
         Vector2f v1 = new Vector2f(1.0f, 2.0f);
         Vector2f v2 = new Vector2f(1.0f, 2.0f);
         Vector2f v3 = new Vector2f(1.0f, 2.1f);
+        Vector2f v4 = new Vector2f(0.0f, 1.0f);
+        Vector2f v5 = new Vector2f(-0.0f, 1.0f);
 
         assertEquals(v1, v2);
         assertNotEquals(v1, v3);
-        assertNotEquals(v1, null);
-        assertNotEquals(v1, "meow");
+        assertEquals(v4, v5);
+        assertNotEquals(null, v1);
+        assertNotEquals("meow", v1);
     }
 
     @Test

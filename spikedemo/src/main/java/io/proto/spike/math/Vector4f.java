@@ -46,7 +46,7 @@ public class Vector4f {
 
     public Vector4f normalize() {
         float len = length();
-        return len != 0 ? scale(1.0f / len) : new Vector4f(0, 0, 0, 0);
+        return len != 0 ? scale(1.0f / len) : this;
     }
 
     public Vector4f negate() {
@@ -65,10 +65,10 @@ public class Vector4f {
     public boolean equals(Object obj) {
         if (!(obj instanceof Vector4f)) return false;
         Vector4f v = (Vector4f) obj;
-        return Float.compare(x, v.x) == 0 &&
-                Float.compare(y, v.y) == 0 &&
-                Float.compare(z, v.z) == 0 &&
-                Float.compare(w, v.w) == 0;
+        return Float.compare(x + 0f, v.x + 0f) == 0 &&
+                Float.compare(y + 0f, v.y + 0f) == 0 &&
+                Float.compare(z + 0f, v.z + 0f) == 0 &&
+                Float.compare(w + 0f, v.w + 0f) == 0;
     }
 
     @Override

@@ -103,8 +103,8 @@ class Vector4fTest {
 
         assertEquals(v1, v2);
         assertNotEquals(v1, v3);
-        assertNotEquals(v1, null);
-        assertNotEquals(v1, "kraht");
+        assertNotEquals(null, v1);
+        assertNotEquals("kraht", v1);
     }
 
     @Test
