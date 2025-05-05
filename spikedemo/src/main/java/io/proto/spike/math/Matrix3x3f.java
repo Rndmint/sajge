@@ -1,14 +1,10 @@
 package io.proto.spike.math;
 
 public class Matrix3x3f {
-    public float m00, m01, m02;
-    public float m10, m11, m12;
-    public float m20, m21, m22;
+    public final float[][] data;
 
     public Matrix3x3f() {
-        this(0, 0, 0,
-                0, 0, 0,
-                0, 0, 0);
+        this.data = new float[3][3];
     }
 
     public Matrix3x3f(
@@ -16,115 +12,127 @@ public class Matrix3x3f {
             float m10, float m11, float m12,
             float m20, float m21, float m22
     ) {
-        this.m00 = m00; this.m01 = m01; this.m02 = m02;
-        this.m10 = m10; this.m11 = m11; this.m12 = m12;
-        this.m20 = m20; this.m21 = m21; this.m22 = m22;
+        this.data = new float[][]{
+                {m00, m01, m02},
+                {m10, m11, m12},
+                {m20, m21, m22}
+        };
     }
 
-    public void setIdentity() {
-        m00 = m11 = m22 = 1;
-        m01 = m02 = m10 = m12 = m20 = m21 = 0;
+    public Matrix3x3f(Matrix3x3f other) {
+        this.data = new float[3][3];
+        for (int i = 0; i < 3; i++) {
+            System.arraycopy(other.data[i], 0, this.data[i], 0, 3);
+        }
+    }
+
+    public Matrix3x3f setIdentity() {
+        Matrix3x3f result = new Matrix3x3f();
+        for (int i = 0; i < 3; i++) {
+            result.data[i][i] = 1;
+        }
+        return result;
     }
 
     public Matrix3x3f add(Matrix3x3f o) {
-        return new Matrix3x3f(
-                m00 + o.m00, m01 + o.m01, m02 + o.m02,
-                m10 + o.m10, m11 + o.m11, m12 + o.m12,
-                m20 + o.m20, m21 + o.m21, m22 + o.m22
-        );
+        Matrix3x3f result = new Matrix3x3f();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                result.data[i][j] = this.data[i][j] + o.data[i][j];
+            }
+        }
+        return result;
     }
 
     public Matrix3x3f sub(Matrix3x3f o) {
-        return new Matrix3x3f(
-                m00 - o.m00, m01 - o.m01, m02 - o.m02,
-                m10 - o.m10, m11 - o.m11, m12 - o.m12,
-                m20 - o.m20, m21 - o.m21, m22 - o.m22
-        );
+        Matrix3x3f result = new Matrix3x3f();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                result.data[i][j] = this.data[i][j] - o.data[i][j];
+            }
+        }
+        return result;
     }
 
     public Matrix3x3f scale(float s) {
-        return new Matrix3x3f(
-                m00 * s, m01 * s, m02 * s,
-                m10 * s, m11 * s, m12 * s,
-                m20 * s, m21 * s, m22 * s
-        );
+        Matrix3x3f result = new Matrix3x3f();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                result.data[i][j] = this.data[i][j] * s;
+            }
+        }
+        return result;
     }
 
     public Matrix3x3f multiply(Matrix3x3f o) {
-        return new Matrix3x3f(
-                m00 * o.m00 + m01 * o.m10 + m02 * o.m20,
-                m00 * o.m01 + m01 * o.m11 + m02 * o.m21,
-                m00 * o.m02 + m01 * o.m12 + m02 * o.m22,
-
-                m10 * o.m00 + m11 * o.m10 + m12 * o.m20,
-                m10 * o.m01 + m11 * o.m11 + m12 * o.m21,
-                m10 * o.m02 + m11 * o.m12 + m12 * o.m22,
-
-                m20 * o.m00 + m21 * o.m10 + m22 * o.m20,
-                m20 * o.m01 + m21 * o.m11 + m22 * o.m21,
-                m20 * o.m02 + m21 * o.m12 + m22 * o.m22
-        );
+        Matrix3x3f result = new Matrix3x3f();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                float sum = 0;
+                for (int k = 0; k < 3; k++) {
+                    sum += this.data[i][k] * o.data[k][j];
+                }
+                result.data[i][j] = sum;
+            }
+        }
+        return result;
     }
 
     public Vector3f multiply(Vector3f v) {
-        return new Vector3f(
-                m00 * v.x + m01 * v.y + m02 * v.z,
-                m10 * v.x + m11 * v.y + m12 * v.z,
-                m20 * v.x + m21 * v.y + m22 * v.z
-        );
+        float[] result = new float[3];
+        for (int i = 0; i < 3; i++) {
+            float sum = 0;
+            for (int j = 0; j < 3; j++) {
+                sum += this.data[i][j] * v.data[j];
+            }
+            result[i] = sum;
+        }
+        return new Vector3f(result[0], result[1], result[2]);
     }
 
     public float determinant() {
-        return m00 * (m11 * m22 - m12 * m21)
-                - m01 * (m10 * m22 - m12 * m20)
-                + m02 * (m10 * m21 - m11 * m20);
+        float a = data[0][0], b = data[0][1], c = data[0][2];
+        float d = data[1][0], e = data[1][1], f = data[1][2];
+        float g = data[2][0], h = data[2][1], i = data[2][2];
+        return a * (e * i - f * h)
+                - b * (d * i - f * g)
+                + c * (d * h - e * g);
     }
 
     public Matrix3x3f transpose() {
-        return new Matrix3x3f(
-                m00, m10, m20,
-                m01, m11, m21,
-                m02, m12, m22
-        );
+        Matrix3x3f result = new Matrix3x3f();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                result.data[i][j] = this.data[j][i];
+            }
+        }
+        return result;
     }
 
     public Matrix3x3f inverse() {
         float det = determinant();
         if (det == 0) return null;
-
+        float[][] m = data;
         float invDet = 1.0f / det;
 
-        return new Matrix3x3f(
-                (m11 * m22 - m12 * m21) * invDet,
-                -(m01 * m22 - m02 * m21) * invDet,
-                (m01 * m12 - m02 * m11) * invDet,
+        Matrix3x3f result = new Matrix3x3f();
+        result.data[0][0] = (m[1][1] * m[2][2] - m[1][2] * m[2][1]) * invDet;
+        result.data[0][1] = (m[0][2] * m[2][1] - m[0][1] * m[2][2]) * invDet;
+        result.data[0][2] = (m[0][1] * m[1][2] - m[0][2] * m[1][1]) * invDet;
+        result.data[1][0] = (m[1][2] * m[2][0] - m[1][0] * m[2][2]) * invDet;
+        result.data[1][1] = (m[0][0] * m[2][2] - m[0][2] * m[2][0]) * invDet;
+        result.data[1][2] = (m[0][2] * m[1][0] - m[0][0] * m[1][2]) * invDet;
+        result.data[2][0] = (m[1][0] * m[2][1] - m[1][1] * m[2][0]) * invDet;
+        result.data[2][1] = (m[0][1] * m[2][0] - m[0][0] * m[2][1]) * invDet;
+        result.data[2][2] = (m[0][0] * m[1][1] - m[0][1] * m[1][0]) * invDet;
 
-                -(m10 * m22 - m12 * m20) * invDet,
-                (m00 * m22 - m02 * m20) * invDet,
-                -(m00 * m12 - m02 * m10) * invDet,
-
-                (m10 * m21 - m11 * m20) * invDet,
-                -(m00 * m21 - m01 * m20) * invDet,
-                (m00 * m11 - m01 * m10) * invDet
-        );
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof Matrix3x3f)) return false;
-        Matrix3x3f o = (Matrix3x3f) obj;
-        return Float.compare(m00, o.m00) == 0 && Float.compare(m01, o.m01) == 0 && Float.compare(m02, o.m02) == 0 &&
-                Float.compare(m10, o.m10) == 0 && Float.compare(m11, o.m11) == 0 && Float.compare(m12, o.m12) == 0 &&
-                Float.compare(m20, o.m20) == 0 && Float.compare(m21, o.m21) == 0 && Float.compare(m22, o.m22) == 0;
+        return result;
     }
 
     @Override
     public String toString() {
-        return String.format(
-                "[[%f, %f, %f],\n [%f, %f, %f],\n [%f, %f, %f]]",
-                m00, m01, m02,
-                m10, m11, m12,
-                m20, m21, m22
-        ).replaceAll(",(?!\\s)", ".");
+        return "[" + data[0][0] + ", " + data[0][1] + ", " + data[0][2] + "; "
+                + data[1][0] + ", " + data[1][1] + ", " + data[1][2] + "; "
+                + data[2][0] + ", " + data[2][1] + ", " + data[2][2] + "]";
     }
 }

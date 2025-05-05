@@ -1,41 +1,54 @@
 package io.proto.spike.math;
 
 public class Vector2f {
-    public float x;
-    public float y;
+    public final float[] data;
 
     public Vector2f() {
-        this(0, 0);
+        this.data = new float[2];
     }
 
     public Vector2f(float x, float y) {
-        this.x = x;
-        this.y = y;
+        this.data = new float[]{x, y};
     }
 
     public Vector2f(Vector2f other) {
-        this.x = other.x;
-        this.y = other.y;
+        this.data = new float[]{other.data[0], other.data[1]};
     }
 
     public Vector2f add(Vector2f v) {
-        return new Vector2f(x + v.x, y + v.y);
+        float[] result = new float[2];
+        for (int i = 0; i < 2; i++) {
+            result[i] = this.data[i] + v.data[i];
+        }
+        return new Vector2f(result[0], result[1]);
     }
 
     public Vector2f sub(Vector2f v) {
-        return new Vector2f(x - v.x, y - v.y);
+        float[] result = new float[2];
+        for (int i = 0; i < 2; i++) {
+            result[i] = this.data[i] - v.data[i];
+        }
+        return new Vector2f(result[0], result[1]);
     }
 
     public Vector2f scale(float scalar) {
-        return new Vector2f(x * scalar, y * scalar);
+        float[] result = new float[2];
+        for (int i = 0; i < 2; i++) {
+            result[i] = this.data[i] * scalar;
+        }
+        return new Vector2f(result[0], result[1]);
     }
 
     public float dot(Vector2f v) {
-        return x * v.x + y * v.y;
+        float sum = 0;
+        for (int i = 0; i < 2; i++) {
+            sum += this.data[i] * v.data[i];
+        }
+        return sum;
     }
 
     public float length() {
-        return (float) Math.sqrt(x * x + y * y);
+        return (float) Math.sqrt(dot(this));
     }
 
     public Vector2f normalize() {
@@ -44,24 +57,20 @@ public class Vector2f {
     }
 
     public float distance(Vector2f v) {
-        float dx = x - v.x;
-        float dy = y - v.y;
-        return (float) Math.sqrt(dx * dx + dy * dy);
+        float sum = 0;
+        for (int i = 0; i < 2; i++) {
+            float d = this.data[i] - v.data[i];
+            sum += d * d;
+        }
+        return (float) Math.sqrt(sum);
     }
 
     public Vector2f negate() {
-        return new Vector2f(-x, -y);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof Vector2f)) return false;
-        Vector2f v = (Vector2f) obj;
-        return Float.compare(x + 0f, v.x + 0f) == 0 && Float.compare(y + 0f, v.y + 0f) == 0;
+        return scale(-1f);
     }
 
     @Override
     public String toString() {
-        return "(" + x + ", " + y + ")";
+        return "[" + data[0] + ", " + data[1] + "]";
     }
 }

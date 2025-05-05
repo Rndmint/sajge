@@ -1,51 +1,61 @@
 package io.proto.spike.math;
 
 public class Vector3f {
-    public float x;
-    public float y;
-    public float z;
+    public final float[] data;
 
     public Vector3f() {
-        this(0, 0, 0);
+        this.data = new float[3];
     }
 
     public Vector3f(float x, float y, float z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.data = new float[]{x, y, z};
     }
 
     public Vector3f(Vector3f other) {
-        this.x = other.x;
-        this.y = other.y;
-        this.z = other.z;
+        this.data = new float[]{other.data[0], other.data[1], other.data[2]};
     }
 
     public Vector3f add(Vector3f v) {
-        return new Vector3f(x + v.x, y + v.y, z + v.z);
+        float[] result = new float[3];
+        for (int i = 0; i < 3; i++) {
+            result[i] = this.data[i] + v.data[i];
+        }
+        return new Vector3f(result[0], result[1], result[2]);
     }
 
     public Vector3f sub(Vector3f v) {
-        return new Vector3f(x - v.x, y - v.y, z - v.z);
+        float[] result = new float[3];
+        for (int i = 0; i < 3; i++) {
+            result[i] = this.data[i] - v.data[i];
+        }
+        return new Vector3f(result[0], result[1], result[2]);
     }
 
     public Vector3f scale(float scalar) {
-        return new Vector3f(x * scalar, y * scalar, z * scalar);
+        float[] result = new float[3];
+        for (int i = 0; i < 3; i++) {
+            result[i] = this.data[i] * scalar;
+        }
+        return new Vector3f(result[0], result[1], result[2]);
     }
 
     public float dot(Vector3f v) {
-        return x * v.x + y * v.y + z * v.z;
+        float sum = 0;
+        for (int i = 0; i < 3; i++) {
+            sum += this.data[i] * v.data[i];
+        }
+        return sum;
     }
 
     public Vector3f cross(Vector3f v) {
-        float cx = y * v.z - z * v.y;
-        float cy = z * v.x - x * v.z;
-        float cz = x * v.y - y * v.x;
-        return new Vector3f(cx, cy, cz);
+        float x = data[1] * v.data[2] - data[2] * v.data[1];
+        float y = data[2] * v.data[0] - data[0] * v.data[2];
+        float z = data[0] * v.data[1] - data[1] * v.data[0];
+        return new Vector3f(x, y, z);
     }
 
     public float length() {
-        return (float) Math.sqrt(x * x + y * y + z * z);
+        return (float) Math.sqrt(dot(this));
     }
 
     public Vector3f normalize() {
@@ -54,27 +64,20 @@ public class Vector3f {
     }
 
     public Vector3f negate() {
-        return new Vector3f(-x, -y, -z);
+        return scale(-1f);
     }
 
     public float distance(Vector3f v) {
-        float dx = x - v.x;
-        float dy = y - v.y;
-        float dz = z - v.z;
-        return (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof Vector3f)) return false;
-        Vector3f v = (Vector3f) obj;
-        return Float.compare(x + 0f, v.x + 0f) == 0 &&
-                Float.compare(y + 0f, v.y + 0f) == 0 &&
-                Float.compare(z + 0f, v.z + 0f) == 0;
+        float sum = 0;
+        for (int i = 0; i < 3; i++) {
+            float d = this.data[i] - v.data[i];
+            sum += d * d;
+        }
+        return (float) Math.sqrt(sum);
     }
 
     @Override
     public String toString() {
-        return "(" + x + ", " + y + ", " + z + ")";
+        return "[" + data[0] + ", " + data[1] + ", " + data[2] + "]";
     }
 }

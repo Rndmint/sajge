@@ -1,47 +1,54 @@
 package io.proto.spike.math;
 
 public class Vector4f {
-    public float x;
-    public float y;
-    public float z;
-    public float w;
+    public final float[] data;
 
     public Vector4f() {
-        this(0, 0, 0, 0);
+        this.data = new float[4];
     }
 
     public Vector4f(float x, float y, float z, float w) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.w = w;
+        this.data = new float[]{x, y, z, w};
     }
 
     public Vector4f(Vector4f other) {
-        this.x = other.x;
-        this.y = other.y;
-        this.z = other.z;
-        this.w = other.w;
+        this.data = new float[]{other.data[0], other.data[1], other.data[2], other.data[3]};
     }
 
     public Vector4f add(Vector4f v) {
-        return new Vector4f(x + v.x, y + v.y, z + v.z, w + v.w);
+        float[] result = new float[4];
+        for (int i = 0; i < 4; i++) {
+            result[i] = this.data[i] + v.data[i];
+        }
+        return new Vector4f(result[0], result[1], result[2], result[3]);
     }
 
     public Vector4f sub(Vector4f v) {
-        return new Vector4f(x - v.x, y - v.y, z - v.z, w - v.w);
+        float[] result = new float[4];
+        for (int i = 0; i < 4; i++) {
+            result[i] = this.data[i] - v.data[i];
+        }
+        return new Vector4f(result[0], result[1], result[2], result[3]);
     }
 
     public Vector4f scale(float scalar) {
-        return new Vector4f(x * scalar, y * scalar, z * scalar, w * scalar);
+        float[] result = new float[4];
+        for (int i = 0; i < 4; i++) {
+            result[i] = this.data[i] * scalar;
+        }
+        return new Vector4f(result[0], result[1], result[2], result[3]);
     }
 
     public float dot(Vector4f v) {
-        return x * v.x + y * v.y + z * v.z + w * v.w;
+        float sum = 0;
+        for (int i = 0; i < 4; i++) {
+            sum += this.data[i] * v.data[i];
+        }
+        return sum;
     }
 
     public float length() {
-        return (float) Math.sqrt(x * x + y * y + z * z + w * w);
+        return (float) Math.sqrt(dot(this));
     }
 
     public Vector4f normalize() {
@@ -50,29 +57,20 @@ public class Vector4f {
     }
 
     public Vector4f negate() {
-        return new Vector4f(-x, -y, -z, -w);
+        return scale(-1f);
     }
 
     public float distance(Vector4f v) {
-        float dx = x - v.x;
-        float dy = y - v.y;
-        float dz = z - v.z;
-        float dw = w - v.w;
-        return (float) Math.sqrt(dx * dx + dy * dy + dz * dz + dw * dw);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof Vector4f)) return false;
-        Vector4f v = (Vector4f) obj;
-        return Float.compare(x + 0f, v.x + 0f) == 0 &&
-                Float.compare(y + 0f, v.y + 0f) == 0 &&
-                Float.compare(z + 0f, v.z + 0f) == 0 &&
-                Float.compare(w + 0f, v.w + 0f) == 0;
+        float sum = 0;
+        for (int i = 0; i < 4; i++) {
+            float d = this.data[i] - v.data[i];
+            sum += d * d;
+        }
+        return (float) Math.sqrt(sum);
     }
 
     @Override
     public String toString() {
-        return "(" + x + ", " + y + ", " + z + ", " + w + ")";
+        return "[" + data[0] + ", " + data[1] + ", " + data[2] + ", " + data[3] + "]";
     }
 }
