@@ -7,6 +7,18 @@ public class Model {
     public Transform transform;
     public Material material;
 
-    public Model(Mesh mesh, Transform transform, Material material) {
+    public Model(Mesh mesh, Transform t, Material m) {
+        this.mesh = mesh;
+        this.transform = t;
+        this.material = m;
+    }
+
+    @Override
+    public String toString() {
+        return "Model{" +
+                "mesh=" + mesh +
+                ", transform=" + transform +
+                ", material=" + material +
+                '}';
     }
 }

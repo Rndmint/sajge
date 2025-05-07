@@ -6,5 +6,13 @@ public class Material {
     public Color color;
 
     public Material(Color color) {
+        this.color = color;
+    }
+
+    @Override
+    public String toString() {
+        return "Material{" +
+                "color=" + color +
+                '}';
     }
 }

@@ -5,6 +5,6 @@ import io.proto.spike.renderer.core.Vec4;
 
 public class ClippingUtils {
     public static Vec4 intersectPlane(Vec4 a, Vec4 b, Plane plane) {
-        return null;
+        return plane.intersect(a, b);
     }
 }
