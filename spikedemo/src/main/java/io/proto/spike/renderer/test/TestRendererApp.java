@@ -46,11 +46,22 @@ public class TestRendererApp {
         controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
         controls.setPreferredSize(new Dimension(200, 600));
 
-        addSlider(controls, "Cam X", -10, 10, 0, val -> scene.camera.transform.position.x = val);
-        addSlider(controls, "Cam Y", -10, 10, 0, val -> scene.camera.transform.position.y = val);
-        addSlider(controls, "Cam Z", -20, 20, 5, val -> scene.camera.transform.position.z = val);
-        addSlider(controls, "Cube Rot Y", 0, 360, 0, deg -> cubeTransform.rotation.y = (float)Math.toRadians(deg));
+        addSlider(controls, "Cam Pos X", -10, 10, 0, val -> scene.getCamera().transform.position.x = val);
+        addSlider(controls, "Cam Pos Y", -10, 10, 0, val -> scene.getCamera().transform.position.y = val);
+        addSlider(controls, "Cam Pos Z", -20, 20, 5, val -> scene.getCamera().transform.position.z = val);
+        addSlider(controls, "Cam Rot X", -180, 180, 0, deg -> scene.getCamera().transform.rotation.x = (float)Math.toRadians(deg));
+        addSlider(controls, "Cam Rot Y", -180, 180, 0, deg -> scene.getCamera().transform.rotation.y = (float)Math.toRadians(deg));
+        addSlider(controls, "Cam Rot Z", -180, 180, 0, deg -> scene.getCamera().transform.rotation.z = (float)Math.toRadians(deg));
+
+        addSlider(controls, "Cube Pos X", -10, 10, 0, val -> cubeTransform.position.x = val);
+        addSlider(controls, "Cube Pos Y", -10, 10, 0, val -> cubeTransform.position.y = val);
+        addSlider(controls, "Cube Pos Z", -20, 20, 0, val -> cubeTransform.position.z = val);
         addSlider(controls, "Cube Rot X", 0, 360, 0, deg -> cubeTransform.rotation.x = (float)Math.toRadians(deg));
+        addSlider(controls, "Cube Rot Y", 0, 360, 0, deg -> cubeTransform.rotation.y = (float)Math.toRadians(deg));
+        addSlider(controls, "Cube Rot Z", 0, 360, 0, deg -> cubeTransform.rotation.z = (float)Math.toRadians(deg));
+        addSlider(controls, "Cube Scale X", 1, 200, 100, pct -> cubeTransform.scale.x = pct / 100f);
+        addSlider(controls, "Cube Scale Y", 1, 200, 100, pct -> cubeTransform.scale.y = pct / 100f);
+        addSlider(controls, "Cube Scale Z", 1, 200, 100, pct -> cubeTransform.scale.z = pct / 100f);
 
         frame.add(new JScrollPane(controls), BorderLayout.EAST);
         frame.setVisible(true);
