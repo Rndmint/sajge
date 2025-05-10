@@ -39,69 +39,62 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.github.sajge</groupId>
+            <artifactId>${logger.artifactId}</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>ban-hikaricp</id>
-                        <goals><goal>enforce</goal></goals>
-                        <configuration>
-                            <rules>
-                                <bannedDependencies>
-                                    <excludes>
-                                        <exclude>com.zaxxer:HikariCP</exclude>
-                                    </excludes>
-                                </bannedDependencies>
-                            </rules>
-                            <fail>true</fail>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation=
+                                                     "org.apache.maven.plugins.
+                                                     shade.resource.
+                                                     ManifestResourceTransformer">
+                                    <mainClass>io.github.sajge.server.Main</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>deploy-server</id>
-                        <phase>install</phase>
-                        <goals><goal>exec</goal></goals>
-                        <configuration>
-                            <executable>python</executable>
-                            <arguments>
-                                <argument>../scripts/deploy_server.py</argument>
-                                <argument>--ssh-host</argument><argument>${ssh.host}</argument>
-                                <argument>--ssh-user</argument><argument>${ssh.user}</argument>
-                                <argument>--ssh-pass</argument><argument>${ssh.password}</argument>
-                                <argument>--jar</argument>
-                                <argument>${project.build.directory}/${project.artifactId}-${project.version}-fat.jar</argument>
-                                <argument>--remote-path</argument><argument>/opt/${project.artifactId}.jar</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>run-server</id>
                         <phase>install</phase>
-                        <goals><goal>exec</goal></goals>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
                         <configuration>
                             <executable>python</executable>
                             <arguments>
                                 <argument>../scripts/run_server.py</argument>
-                                <argument>--ssh-host</argument><argument>${ssh.host}</argument>
-                                <argument>--ssh-user</argument><argument>${ssh.user}</argument>
-                                <argument>--ssh-pass</argument><argument>${ssh.password}</argument>
-                                <argument>--remote-path</argument><argument>/opt/${project.artifactId}.jar</argument>
+                                <argument>--ssh-host</argument>
+                                <argument>${ssh.host}</argument>
+                                <argument>--ssh-user</argument>
+                                <argument>${ssh.user}</argument>
+                                <argument>--ssh-pass</argument>
+                                <argument>${ssh.password}</argument>
+                                <argument>--remote-path</argument>
+                                <argument>/opt/${project.artifactId}.jar</argument>
                             </arguments>
                         </configuration>
                     </execution>
