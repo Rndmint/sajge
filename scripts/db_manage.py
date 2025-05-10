@@ -19,7 +19,9 @@ def main():
     sftp.put(args.sql_file, remote)
     sftp.close()
 
-    cmd = f"mysql -u{args.mysql_user} -p{args.mysql_pass} < {remote}"
+    cmd = (f"mysql --protocol=tcp "
+           f"-h127.0.0.1 -u{args.mysql_user} -p{args.mysql_pass} "
+           f"< {remote}")
     stdin, stdout, stderr = ssh.exec_command(cmd)
     print(stdout.read().decode(), stderr.read().decode())
 
