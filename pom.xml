@@ -25,12 +25,19 @@
 
         <jackson.version>2.15.2</jackson.version>
         <snakeyaml.version>2.0</snakeyaml.version>
-        <mysql.connector.version>8.1.0</mysql.connector.version>
+        <mysql.connector.version>8.0.33</mysql.connector.version>
         <slf4j.version>2.0.6</slf4j.version>
 
         <logger.artifactId>logging-wrapper-real</logger.artifactId>
 
         <sql.file>scripts/sql/create_schema.sql</sql.file>
+
+        <ssh.host>172.31.253.73</ssh.host>
+        <ssh.user>toto</ssh.user>
+        <ssh.password>toto</ssh.password>
+
+        <mysql.user>root</mysql.user>
+        <mysql.password>wsxedc</mysql.password>
     </properties>
 
     <dependencyManagement>
@@ -54,6 +61,42 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.sajge</groupId>
+                <artifactId>logging-wrapper-real</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.sajge</groupId>
+                <artifactId>logging-wrapper-noop</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.sajge</groupId>
+                <artifactId>engine-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.sajge</groupId>
+                <artifactId>swing-ui</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.sajge</groupId>
+                <artifactId>client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.sajge</groupId>
+                <artifactId>server</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.sajge</groupId>
+                <artifactId>desktop-app</artifactId>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
