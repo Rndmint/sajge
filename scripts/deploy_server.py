@@ -16,7 +16,7 @@ def main():
     sftp = ssh.open_sftp()
     sftp.put(args.jar, args.remote_path)
     sftp.close()
-    print(f"Copied {args.jar} → {args.remote_path}")
+    print(f"Copied {args.jar} -> {args.remote_path}")
 
     ssh.close()
 

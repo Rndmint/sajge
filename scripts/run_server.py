@@ -1,4 +1,4 @@
-import os, argparse, paramiko
+import argparse, paramiko
 
 def main():
     p = argparse.ArgumentParser()
@@ -14,7 +14,7 @@ def main():
 
     cmd = f"nohup java -jar {args.remote_path} > server.log 2>&1 &"
     ssh.exec_command(cmd)
-    print(f"Started server at {args.remote-path}")
+    print(f"Started server at {args.remote_path}")
 
     ssh.close()
 
