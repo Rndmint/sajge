@@ -1,1 +1,2 @@
-BEGIN END;
+DROP DATABASE IF EXISTS hello_schema;
+

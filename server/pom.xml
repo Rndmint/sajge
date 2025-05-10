@@ -21,6 +21,10 @@
     <dependencies>
         <dependency>
             <groupId>io.github.sajge</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.sajge</groupId>
             <artifactId>engine-core</artifactId>
         </dependency>
         <dependency>
@@ -40,6 +44,26 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>ban-hikaricp</id>
+                        <goals><goal>enforce</goal></goals>
+                        <configuration>
+                            <rules>
+                                <bannedDependencies>
+                                    <excludes>
+                                        <exclude>com.zaxxer:HikariCP</exclude>
+                                    </excludes>
+                                </bannedDependencies>
+                            </rules>
+                            <fail>true</fail>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
             <plugin>
@@ -48,14 +72,13 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>deploy-server</id>
                         <phase>install</phase>
                         <goals><goal>exec</goal></goals>
                         <configuration>
-                            <executable>python3</executable>
+                            <executable>python</executable>
                             <arguments>
                                 <argument>../scripts/deploy_server.py</argument>
                                 <argument>--ssh-host</argument><argument>${ssh.host}</argument>
@@ -72,7 +95,7 @@
                         <phase>install</phase>
                         <goals><goal>exec</goal></goals>
                         <configuration>
-                            <executable>python3</executable>
+                            <executable>python</executable>
                             <arguments>
                                 <argument>../scripts/run_server.py</argument>
                                 <argument>--ssh-host</argument><argument>${ssh.host}</argument>
