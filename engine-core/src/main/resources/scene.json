@@ -1,0 +1,53 @@
+{
+  "camera": {
+    "id": 1,
+    "transform": {
+      "position": [0, 0, 5],
+      "rotation": [0, 0, 0],
+      "scale": [1, 1, 1]
+    },
+    "fovY": 1.0471976,
+    "aspect": 1.3333334,
+    "near": 0.1,
+    "far": 100.0
+  },
+  "objects": [
+    {
+      "id": 1,
+      "mesh": {
+        "vertices": [
+          [-1, -1, -1],
+          [ 1, -1, -1],
+          [ 1,  1, -1],
+          [-1,  1, -1],
+          [-1, -1,  1],
+          [ 1, -1,  1],
+          [ 1,  1,  1],
+          [-1,  1,  1]
+        ],
+        "triangles": [
+          { "id": 100, "indices": [0, 1, 2], "normal": [ 0,  0, -1], "color": "#D3D3D3" },
+          { "id": 101, "indices": [0, 2, 3], "normal": [ 0,  0, -1], "color": "#D3D3D3" },
+          { "id": 102, "indices": [4, 6, 5], "normal": [ 0,  0,  1], "color": "#D3D3D3" },
+          { "id": 103, "indices": [4, 7, 6], "normal": [ 0,  0,  1], "color": "#D3D3D3" },
+          { "id": 104, "indices": [0, 4, 5], "normal": [ 0,  1,  0], "color": "#D3D3D3" },
+          { "id": 105, "indices": [0, 5, 1], "normal": [ 0,  1,  0], "color": "#D3D3D3" },
+          { "id": 106, "indices": [3, 2, 6], "normal": [ 0, -1,  0], "color": "#D3D3D3" },
+          { "id": 107, "indices": [3, 6, 7], "normal": [ 0, -1,  0], "color": "#D3D3D3" },
+          { "id": 108, "indices": [1, 5, 6], "normal": [ 1,  0,  0], "color": "#D3D3D3" },
+          { "id": 109, "indices": [1, 6, 2], "normal": [ 1,  0,  0], "color": "#D3D3D3" },
+          { "id": 110, "indices": [0, 3, 7], "normal": [-1,  0,  0], "color": "#D3D3D3" },
+          { "id": 111, "indices": [0, 7, 4], "normal": [-1,  0,  0], "color": "#D3D3D3" }
+        ]
+      },
+      "transform": {
+        "position": [0, 0, 0],
+        "rotation": [0, 0, 0],
+        "scale":    [1, 1, 1]
+      },
+      "material": {
+        "color": "#FFA500"
+      }
+    }
+  ]
+}
