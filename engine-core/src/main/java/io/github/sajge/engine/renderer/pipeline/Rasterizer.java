@@ -12,17 +12,20 @@ public class Rasterizer {
 
     private final FrameBuffer fb;
     private final DepthBuffer db;
-    private final int[] idBuffer;
+    private final int[] triangleIdBuffer;
+    private final int[] modelIdBuffer;
 
     public Rasterizer(
             FrameBuffer fb,
             DepthBuffer db,
-            int[] idBuffer
+            int[] triangleIdBuffer,
+            int[] modelIdBuffer
     ) {
         log.info("Initializing Rasterizer");
         this.fb = fb;
         this.db = db;
-        this.idBuffer = idBuffer;
+        this.triangleIdBuffer = triangleIdBuffer;
+        this.modelIdBuffer = modelIdBuffer;
     }
 
     public void rasterizeTriangle(
@@ -87,7 +90,8 @@ public class Rasterizer {
                     if (db.testAndSet(x, y, trueZ)) {
                         fb.setPixel(x, y, color);
                         int idx = y * width + x;
-                        idBuffer[idx] = v0.getTriangleId();
+                        triangleIdBuffer[idx] = v0.getTriangleId();
+                        modelIdBuffer[idx] = v0.getModelId();
                         pixelsDrawn++;
                     }
                 }

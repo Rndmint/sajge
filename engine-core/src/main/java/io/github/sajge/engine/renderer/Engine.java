@@ -18,8 +18,11 @@ public class Engine {
     private final int height;
     private final FrameBuffer fb;
     private final DepthBuffer db;
-    private final int[] idBuffer;
+    private final int[] tmpTriangleIdBuffer;
+    private final int[] tmpModelIdBuffer;
     private final Pipeline pipeline;
+    private final int[] triangleIdBuffer;
+    private final int[] modelIdBuffer;
     private Scene scene;
 
     public Engine(int width, int height) {
@@ -28,8 +31,11 @@ public class Engine {
         this.height = height;
         this.fb = new FrameBuffer(width, height);
         this.db = new DepthBuffer(width, height);
-        this.idBuffer = new int[width * height];
-        this.pipeline = new Pipeline(fb, db, idBuffer);
+        this.tmpTriangleIdBuffer = new int[width * height];
+        this.tmpModelIdBuffer = new int[width * height];
+        this.triangleIdBuffer = new int[width * height];
+        this.modelIdBuffer = new int[width * height];
+        this.pipeline = new Pipeline(fb, db, tmpTriangleIdBuffer, tmpModelIdBuffer);
     }
 
     public void loadSceneFromJson(String json) throws Exception {
@@ -52,9 +58,14 @@ public class Engine {
             throw new IllegalStateException("No scene loaded");
         }
 
+        System.arraycopy(tmpTriangleIdBuffer, 0, triangleIdBuffer, 0, triangleIdBuffer.length);
+        System.arraycopy(tmpModelIdBuffer, 0, modelIdBuffer, 0, modelIdBuffer.length);
+
         fb.clear(Color.BLACK);
         db.clear();
-        Arrays.fill(idBuffer, -1);
+
+        Arrays.fill(tmpTriangleIdBuffer, -1);
+        Arrays.fill(tmpModelIdBuffer, -1);
 
         pipeline.renderScene(scene);
         log.info("Render complete");
@@ -65,9 +76,24 @@ public class Engine {
         return fb.getImage();
     }
 
-    public IntBuffer getIdBuffer() {
-        log.debug("Retrieving ID buffer");
-        return IntBuffer.wrap(idBuffer);
+    public int getTriangleById() {
+        log.debug("Retrieving Triangle by ID");
+        return 0;
+    }
+
+    public int getModelById() {
+        log.debug("Retrieving Triangle by ID");
+        return 0;
+    }
+
+    public IntBuffer getTmpTriangleIdBuffer() {
+        log.debug("Retrieving Model ID");
+        return IntBuffer.wrap(tmpTriangleIdBuffer);
+    }
+
+    public IntBuffer getTmpModelIdBuffer() {
+        log.debug("Retrieving Model ID");
+        return IntBuffer.wrap(tmpModelIdBuffer);
     }
 
     public int getWidth() {

@@ -5,7 +5,6 @@ import io.github.sajge.engine.renderer.buffer.FrameBuffer;
 import io.github.sajge.engine.renderer.core.Mat4;
 import io.github.sajge.engine.renderer.core.Vec3;
 import io.github.sajge.engine.renderer.core.Vec4;
-import io.github.sajge.engine.renderer.core.Vec4;
 import io.github.sajge.engine.renderer.scene.Mesh;
 import io.github.sajge.engine.renderer.scene.Model;
 import io.github.sajge.engine.renderer.scene.Scene;
@@ -20,7 +19,6 @@ public class Pipeline {
 
     private final FrameBuffer fb;
     private final DepthBuffer db;
-    private final int[] idBuffer;
     private final VertexProcessor vp;
     private final Clipper clipper;
     private final Projector projector;
@@ -30,17 +28,17 @@ public class Pipeline {
     public Pipeline(
             FrameBuffer fb,
             DepthBuffer db,
-            int[] idBuffer
+            int[] triangleIdBuffer,
+            int[] modelIdBuffer
     ) {
         log.info("Initializing Pipeline");
         this.fb = fb;
         this.db = db;
-        this.idBuffer = idBuffer;
         this.vp = new VertexProcessor();
         this.clipper = new Clipper();
         this.projector = new Projector();
         this.vt = new ViewportTransformer();
-        this.rast = new Rasterizer(fb, db, idBuffer);
+        this.rast = new Rasterizer(fb, db, triangleIdBuffer, modelIdBuffer);
     }
 
     public void renderScene(Scene scene) {

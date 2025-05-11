@@ -6,6 +6,8 @@ import io.github.sajge.engine.renderer.scene.Model;
 import io.github.sajge.engine.renderer.scene.Triangle;
 import io.github.sajge.logger.Logger;
 
+import java.awt.*;
+
 public class Editor {
     private static final Logger log = Logger.get(Editor.class);
 
@@ -65,7 +67,7 @@ public class Editor {
         }, () -> log.error("Selected modelId {} not found", selectedModelId));
     }
 
-    public void setFaceColor(int triangleId, java.awt.Color color) {
+    public void setFaceColor(int triangleId, Color color) {
         log.debug("Setting faceColor for triangleId={} to {}", triangleId, color);
         scene.findByTriangleId(triangleId).ifPresentOrElse(info -> {
             scene.findModel(info.getModelId()).ifPresent(model -> {
