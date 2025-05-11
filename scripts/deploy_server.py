@@ -1,4 +1,6 @@
-import argparse, os, paramiko
+import argparse
+import paramiko
+from scp import SCPClient
 
 def main():
     p = argparse.ArgumentParser()
@@ -13,10 +15,9 @@ def main():
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(args.ssh_host, username=args.ssh_user, password=args.ssh_pass)
 
-    sftp = ssh.open_sftp()
-    sftp.put(args.jar, args.remote_path)
-    sftp.close()
-    print(f"Copied {args.jar} -> {args.remote_path}")
+    with SCPClient(ssh.get_transport()) as scp:
+        scp.put(args.jar, args.remote_path)
+        print(f"Copied {args.jar} -> {args.remote_path}")
 
     ssh.close()
 

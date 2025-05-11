@@ -33,7 +33,8 @@
 
         <sql.file>scripts/sql/create_schema.sql</sql.file>
 
-        <ssh.host>172.31.253.73</ssh.host>
+        <ssh.db.host>172.31.253.73</ssh.db.host>
+        <ssh.server.host>172.31.249.174</ssh.server.host>
         <ssh.user>toto</ssh.user>
         <ssh.password>toto</ssh.password>
 
@@ -181,7 +182,7 @@
                                     <arguments>
                                         <argument>scripts/db_manage.py</argument>
                                         <argument>--ssh-host</argument>
-                                        <argument>${ssh.host}</argument>
+                                        <argument>${ssh.db.host}</argument>
                                         <argument>--ssh-user</argument>
                                         <argument>${ssh.user}</argument>
                                         <argument>--ssh-pass</argument>
@@ -223,7 +224,7 @@
                                     <arguments>
                                         <argument>scripts/db_manage.py</argument>
                                         <argument>--ssh-host</argument>
-                                        <argument>${ssh.host}</argument>
+                                        <argument>${ssh.db.host}</argument>
                                         <argument>--ssh-user</argument>
                                         <argument>${ssh.user}</argument>
                                         <argument>--ssh-pass</argument>
@@ -262,7 +263,7 @@
                                     <arguments>
                                         <argument>scripts/deploy_server.py</argument>
                                         <argument>--ssh-host</argument>
-                                        <argument>${ssh.host}</argument>
+                                        <argument>${ssh.server.host}</argument>
                                         <argument>--ssh-user</argument>
                                         <argument>${ssh.user}</argument>
                                         <argument>--ssh-pass</argument>
