@@ -28,6 +28,12 @@ public class Material {
         log.debug("Deserialized Material with color={}", color);
     }
 
+    public Material(Color c) {
+        this.colorHex = String.format("#%06X", c.getRGB() & 0xFFFFFF);
+        this.color = c;
+        log.debug("Deserialized Material with color={}", color);
+    }
+
     @JsonProperty("color")
     public String getColorHex() {
         log.trace("getColorHex() => {}", colorHex);

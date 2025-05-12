@@ -53,6 +53,16 @@ public class Scene {
         this.models = models;
     }
 
+    public Model getModel(int id) {
+        log.trace("getModels() => {} models", models != null ? models.size() : 0);
+        return models.get(id);
+    }
+
+    public void setModels(Model m, int id) {
+        log.trace("setModels({} models)", models != null ? models.size() : 0);
+        models.set(id, m);
+    }
+
     public void addModel(Model m) {
         log.debug("Adding model {} to scene", m);
         models.add(m);
@@ -63,57 +73,17 @@ public class Scene {
         models.remove(m);
     }
 
-    public Optional<TriangleInfo> findByTriangleId(int tid) {
-        log.trace("Finding TriangleInfo for triangleId={}", tid);
-        for (Model m : models) {
-            for (Triangle t : m.getMesh().getTriangles()) {
-                if (t.getId() == tid) {
-                    TriangleInfo info = new TriangleInfo(m.getId(), tid);
-                    log.debug("Found TriangleInfo {}", info);
-                    return Optional.of(info);
-                }
-            }
+    public void reindexModels() {
+        log.debug("Reindexing {} models", models.size());
+        for (int i = 0; i < models.size(); i++) {
+            models.get(i).setId(i);
+            log.trace("Model at list index {} now has id={}", i, i);
         }
-        log.info("No TriangleInfo found for triangleId={}", tid);
-        return Optional.empty();
+        log.info("Model reindexing complete");
     }
 
-    public Optional<Model> findModel(int mid) {
-        log.trace("Finding model with id={}", mid);
-        Optional<Model> model = models.stream()
-                .filter(m -> m.getId() == mid)
-                .findFirst();
-        log.debug("findModel result => {}", model);
-        return model;
-    }
-
-    public static class TriangleInfo {
-        private final int modelId;
-        private final int triangleId;
-
-        @JsonCreator
-        public TriangleInfo(
-                @JsonProperty("modelId") int modelId,
-                @JsonProperty("triangleId") int triangleId
-        ) {
-            this.modelId = modelId;
-            this.triangleId = triangleId;
-            log.debug("Created TriangleInfo modelId={}, triangleId={}", modelId, triangleId);
-        }
-
-        public int getModelId() {
-            log.trace("getModelId() => {}", modelId);
-            return modelId;
-        }
-
-        public int getTriangleId() {
-            log.trace("getTriangleId() => {}", triangleId);
-            return triangleId;
-        }
-
-        @Override
-        public String toString() {
-            return "TriangleInfo(modelId=" + modelId + ", triangleId=" + triangleId + ")";
-        }
+    public Triangle getTriangle(int idm, int idt) {
+        log.trace("getModels() => {} models", models != null ? models.size() : 0);
+        return models.get(idm).getMesh().getTriangle(idt);
     }
 }

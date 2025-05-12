@@ -77,4 +77,15 @@ public class Model {
         log.trace("setMaterial({})", material);
         this.material = material;
     }
+
+    public void applyMaterialColor() {
+        java.awt.Color color = material.getColor();
+        log.debug("Applying material color {} to {} triangles", color, mesh.getTriangles().size());
+        for (Triangle t : mesh.getTriangles()) {
+            t.setColor(color);
+            log.trace("Triangle id={} colored {}", t.getId(), color);
+        }
+        log.info("applyMaterialColor complete");
+    }
+
 }

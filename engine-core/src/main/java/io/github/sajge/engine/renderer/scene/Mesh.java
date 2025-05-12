@@ -19,6 +19,15 @@ public class Mesh {
         this.triangles = new ArrayList<>();
     }
 
+    public void reindexTriangles() {
+        log.debug("Reindexing {} triangles", triangles.size());
+        for (int i = 0; i < triangles.size(); i++) {
+            triangles.get(i).setId(i);
+            log.trace("Triangle at list index {} now has id={}", i, i);
+        }
+        log.info("Triangle reindexing complete");
+    }
+
     @JsonProperty("vertices")
     public List<Vec3> getVertices() {
         log.trace("getVertices() => {}", vertices);
@@ -41,5 +50,15 @@ public class Mesh {
     public void setTriangles(List<Triangle> triangles) {
         log.trace("setTriangles(size={})", triangles != null ? triangles.size() : 0);
         this.triangles = triangles;
+    }
+
+    public Triangle getTriangle(int triangleId) {
+        log.trace("getTriangleById({})", triangleId);
+        return triangles.stream()
+                .filter(t -> t.getId() == triangleId)
+                .findFirst()
+                .orElseThrow(() ->
+                        new IllegalArgumentException("No triangle in mesh with id=" + triangleId)
+                );
     }
 }

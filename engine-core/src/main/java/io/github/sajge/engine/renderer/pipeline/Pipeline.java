@@ -97,7 +97,7 @@ public class Pipeline {
                     var s2 = vt.toScreen(c, width, height);
 
                     log.trace("Rasterizing triangle at screen coords {}, {}, {}", s0, s1, s2);
-                    rast.rasterizeTriangle(s0, s1, s2, m.getMaterial().getColor());
+                    rast.rasterizeTriangle(s0, s1, s2, m.getMesh().getTriangle(t.getId()).getColor());
                 }
             }
         }

@@ -7,8 +7,8 @@ import io.github.sajge.engine.renderer.scene.Scene;
 import io.github.sajge.logger.Logger;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.nio.IntBuffer;
 import java.util.Arrays;
 
 public class Engine {
@@ -16,13 +16,19 @@ public class Engine {
 
     private final int width;
     private final int height;
+
     private final FrameBuffer fb;
+
+    private final FrameBuffer stableFb;
     private final DepthBuffer db;
+
+
     private final int[] tmpTriangleIdBuffer;
     private final int[] tmpModelIdBuffer;
-    private final Pipeline pipeline;
     private final int[] triangleIdBuffer;
     private final int[] modelIdBuffer;
+
+    private final Pipeline pipeline;
     private Scene scene;
 
     public Engine(int width, int height) {
@@ -30,11 +36,14 @@ public class Engine {
         this.width = width;
         this.height = height;
         this.fb = new FrameBuffer(width, height);
+        this.stableFb = new FrameBuffer(width, height);
         this.db = new DepthBuffer(width, height);
+
         this.tmpTriangleIdBuffer = new int[width * height];
         this.tmpModelIdBuffer = new int[width * height];
         this.triangleIdBuffer = new int[width * height];
         this.modelIdBuffer = new int[width * height];
+
         this.pipeline = new Pipeline(fb, db, tmpTriangleIdBuffer, tmpModelIdBuffer);
     }
 
@@ -58,56 +67,59 @@ public class Engine {
             throw new IllegalStateException("No scene loaded");
         }
 
-        System.arraycopy(tmpTriangleIdBuffer, 0, triangleIdBuffer, 0, triangleIdBuffer.length);
-        System.arraycopy(tmpModelIdBuffer, 0, modelIdBuffer, 0, modelIdBuffer.length);
-
         fb.clear(Color.BLACK);
         db.clear();
-
         Arrays.fill(tmpTriangleIdBuffer, -1);
         Arrays.fill(tmpModelIdBuffer, -1);
 
         pipeline.renderScene(scene);
+
+        System.arraycopy(tmpTriangleIdBuffer, 0, triangleIdBuffer, 0, triangleIdBuffer.length);
+        System.arraycopy(tmpModelIdBuffer, 0, modelIdBuffer, 0, modelIdBuffer.length);
+
+        Graphics2D g = stableFb.getImage().createGraphics();
+        try {
+            g.drawImage(fb.getImage(), 0, 0, null);
+        } finally {
+            g.dispose();
+        }
+
         log.info("Render complete");
     }
 
     public BufferedImage getFrame() {
         log.debug("Retrieving frame image");
-        return fb.getImage();
+        return stableFb.getImage();
     }
 
-    public int getTriangleById() {
-        log.debug("Retrieving Triangle by ID");
-        return 0;
+    public int getModelIdAt(int x, int y) {
+        if (x < 0 || x >= width || y < 0 || y >= height) {
+            throw new IllegalArgumentException(
+                    String.format("Coordinates (%d,%d) out of bounds", x, y)
+            );
+        }
+        return modelIdBuffer[y * width + x];
     }
 
-    public int getModelById() {
-        log.debug("Retrieving Triangle by ID");
-        return 0;
-    }
-
-    public IntBuffer getTmpTriangleIdBuffer() {
-        log.debug("Retrieving Model ID");
-        return IntBuffer.wrap(tmpTriangleIdBuffer);
-    }
-
-    public IntBuffer getTmpModelIdBuffer() {
-        log.debug("Retrieving Model ID");
-        return IntBuffer.wrap(tmpModelIdBuffer);
-    }
-
-    public int getWidth() {
-        log.trace("getWidth() => {}", width);
-        return width;
-    }
-
-    public int getHeight() {
-        log.trace("getHeight() => {}", height);
-        return height;
+    public int getTriangleIdAt(int x, int y) {
+        if (x < 0 || x >= width || y < 0 || y >= height) {
+            throw new IllegalArgumentException(
+                    String.format("Coordinates (%d,%d) out of bounds", x, y)
+            );
+        }
+        return triangleIdBuffer[y * width + x];
     }
 
     public Scene getScene() {
         log.trace("getScene() => {}", scene);
         return scene;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }
