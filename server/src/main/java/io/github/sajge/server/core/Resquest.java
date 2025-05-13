@@ -1,4 +1,4 @@
 package io.github.sajge.server.core;
 
-public class SessionRepository {
+public class Resquest {
 }
