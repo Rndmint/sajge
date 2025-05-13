@@ -1,4 +1,4 @@
 package io.github.sajge.server.core;
 
-public class ClientDelegate {
+public class ServiceRegisty {
 }

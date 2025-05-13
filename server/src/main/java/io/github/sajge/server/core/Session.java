@@ -1,4 +1,4 @@
 package io.github.sajge.server.core;
 
-public class Server {
+public class Session {
 }
