@@ -2,6 +2,14 @@ package io.github.sajge.message;
 
 public enum Request {
     ECHO,
+
     SIGNUP,
-    DELETE_ACCOUNT
+    LOGIN,
+    LOGOUT,
+    DELETE_ACCOUNT,
+
+    OPEN_PROJECT_SESS,
+    RENDER_SCENE,
+    EDIT_SCENE,
+
 }

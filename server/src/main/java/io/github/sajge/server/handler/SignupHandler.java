@@ -1,26 +1,31 @@
 package io.github.sajge.server.handler;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.sajge.dto.SignupDto;
 import io.github.sajge.message.Message;
-import io.github.sajge.core.services.SignupService;
-import io.github.sajge.message.Request;
+import io.github.sajge.services.SignupService;
+import io.github.sajge.logger.Logger;
 
 public class SignupHandler implements Handler {
+    private static final Logger logger = Logger.get(SignupHandler.class);
+
     private final ObjectMapper objectMapper = new ObjectMapper();
-
     private final SignupService signupService;
-
-    private final SignupDto signupDto;
 
     public SignupHandler(SignupService signupService) {
         this.signupService = signupService;
-        this.signupDto = new SignupDto();
     }
 
     @Override
     public String handle(Message msg) {
-        return "";
+        try {
+            SignupDto signupDto = objectMapper.treeToValue(msg.getPayload(), SignupDto.class);
+            signupService.create(signupDto.username(), signupDto.password());
+            return "Signup successful";
+        } catch (Exception e) {
+            logger.error("Error handling signup", e);
+            return "Signup failed";
+        }
     }
-
 }

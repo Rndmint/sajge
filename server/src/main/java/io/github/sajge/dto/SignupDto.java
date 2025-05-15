@@ -1,4 +1,4 @@
 package io.github.sajge.dto;
 
-public class SignupDto {
+public record SignupDto(String username, String password) {
 }

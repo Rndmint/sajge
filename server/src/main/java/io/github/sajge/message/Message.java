@@ -1,8 +1,10 @@
 package io.github.sajge.message;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 public class Message {
     private Request type;
-    private String payload;
+    private JsonNode payload;
 
     public Request getType() {
         return type;
@@ -12,11 +14,11 @@ public class Message {
         this.type = type;
     }
 
-    public String getPayload() {
+    public JsonNode getPayload() {
         return payload;
     }
 
-    public void setPayload(String payload) {
+    public void setPayload(JsonNode payload) {
         this.payload = payload;
     }
 
