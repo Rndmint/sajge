@@ -1,54 +1,45 @@
 package io.github.sajge.server;
 
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import io.github.sajge.server.core.routing.ServerDelegator;
-import io.github.sajge.server.core.comm.Request;
-import io.github.sajge.server.core.comm.Response;
+import io.github.sajge.message.Request;
+import io.github.sajge.core.services.SignupService;
+import io.github.sajge.logger.Logger;
+import io.github.sajge.dao.SignupDao;
+import io.github.sajge.server.handler.EchoHandler;
+import io.github.sajge.server.handler.SignupHandler;
+import io.github.sajge.server.network.Dispatcher;
+
+import java.util.Map;
 
 public class Server {
-    private final int port;
-    private final ServerDelegator delegator;
+    private static final Logger logger = Logger.get(Server.class);
+    private static final int SERVER_PORT = 8080;
+    private static final int SERVER_ACCEPT_TIMEOUT_MS = 5000;
+    private static final int SOCKET_READ_TIMEOUT_MS = 5000;
+    private static final int WORKER_POOL_SIZE = 4;
 
-    public Server(int port) {
-        this.port = port;
-        this.delegator = new ServerDelegator();
-    }
+    public void start() {
+        try {
+            logger.info("Starting server on port {}", SERVER_PORT);
 
-    public void start() throws Exception {
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-            while (true) {
-                Socket socket = serverSocket.accept();
-                new Thread(() -> handle(socket)).start();
-            }
-        }
-    }
+            SignupService signupService = new SignupService(new SignupDao());
 
-    private void handle(Socket socket) {
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
-            String line;
-            while ((line = in.readLine()) != null) {
-                Request request = new Request(socket, line.trim());
-                Response response = delegator.delegate(request);
-                out.println(response.getPayload());
-                if ("QUIT".equalsIgnoreCase(line.trim())) {
-                    break;
-                }
-            }
+            EchoHandler EchoHandler = new EchoHandler();
+            SignupHandler signupHandler = new SignupHandler(signupService);
+
+            Dispatcher dispatcher = new Dispatcher(
+                    SERVER_ACCEPT_TIMEOUT_MS,
+                    SOCKET_READ_TIMEOUT_MS,
+                    WORKER_POOL_SIZE,
+                    Map.of(
+                            Request.ECHO, EchoHandler,
+                            Request.SIGNUP, signupHandler
+            ));
+
+            dispatcher.start(SERVER_PORT);
+            logger.info("Server started successfully");
         } catch (Exception e) {
-        } finally {
-            try {
-                socket.close();
-            } catch (Exception e) {
-            }
+            logger.error("Failed to start server", e);
+            System.exit(1);
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-        new Server(8080).start();
     }
 }
