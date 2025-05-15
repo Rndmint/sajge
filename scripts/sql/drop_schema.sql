@@ -1,2 +1,2 @@
-DROP DATABASE IF EXISTS hello_schema;
+DROP DATABASE IF EXISTS sajge_db;
 

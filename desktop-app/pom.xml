@@ -43,6 +43,11 @@
             <groupId>io.github.sajge</groupId>
             <artifactId>${logger.artifactId}</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>2.0</version>
+        </dependency>
     </dependencies>
 
     <build>

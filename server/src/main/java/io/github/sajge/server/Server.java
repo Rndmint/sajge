@@ -1,15 +1,20 @@
 package io.github.sajge.server;
 
-import io.github.sajge.dao.LoginDao;
+import io.github.sajge.server.echos.EchoDto;
+import io.github.sajge.server.echos.EchoResponseDto;
+import io.github.sajge.server.logins.LoginDao;
 import io.github.sajge.database.DBConnectionPool;
-import io.github.sajge.message.Request;
-import io.github.sajge.server.handler.LoginHandler;
-import io.github.sajge.services.LoginService;
-import io.github.sajge.services.SignupService;
+import io.github.sajge.messages.resquests.RequestType;
+import io.github.sajge.server.logins.LoginDto;
+import io.github.sajge.server.logins.LoginHandler;
+import io.github.sajge.server.logins.LoginService;
+import io.github.sajge.server.patterns.Handler;
+import io.github.sajge.server.signups.SignupDto;
+import io.github.sajge.server.signups.SignupService;
 import io.github.sajge.logger.Logger;
-import io.github.sajge.dao.SignupDao;
-import io.github.sajge.server.handler.EchoHandler;
-import io.github.sajge.server.handler.SignupHandler;
+import io.github.sajge.server.signups.SignupDao;
+import io.github.sajge.server.echos.EchoHandler;
+import io.github.sajge.server.signups.SignupHandler;
 import io.github.sajge.server.network.Dispatcher;
 
 import java.sql.SQLException;
@@ -26,23 +31,29 @@ public class Server {
         try {
             logger.info("Starting server on port {}", SERVER_PORT);
 
-            SignupService signupService = new SignupService(new SignupDao());
+            var routes = Map.<RequestType, Dispatcher.Route>of(
+                    RequestType.ECHO,
+                    new Dispatcher.Route(new EchoHandler(),
+                                        EchoDto.class),
 
-            EchoHandler echoHandler = new EchoHandler();
-            SignupHandler signupHandler = new SignupHandler(signupService);
+                    RequestType.SIGNUP,
+                    new Dispatcher.Route(new SignupHandler(
+                                        new SignupService(
+                                                new SignupDao())),
+                                                SignupDto.class),
 
-            LoginService loginService = new LoginService(new LoginDao());
-            LoginHandler loginHandler = new LoginHandler(loginService);
+                    RequestType.LOGIN,
+                    new Dispatcher.Route(new LoginHandler(
+                                        new LoginService(
+                                                new LoginDao())),
+                                                LoginDto.class)
+            );
 
             Dispatcher dispatcher = new Dispatcher(
                     SERVER_ACCEPT_TIMEOUT_MS,
                     SOCKET_READ_TIMEOUT_MS,
                     WORKER_POOL_SIZE,
-                    Map.of(
-                            Request.ECHO, echoHandler,
-                            Request.SIGNUP, signupHandler,
-                            Request.LOGIN,  loginHandler
-            ));
+                    routes);
 
             dispatcher.start(SERVER_PORT);
             logger.info("Server started successfully");
