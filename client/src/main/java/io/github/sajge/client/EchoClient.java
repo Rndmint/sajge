@@ -12,7 +12,7 @@ import java.net.Socket;
 public class EchoClient {
     private static final Logger logger = Logger.get(EchoClient.class);
 
-    private static final String SERVER_HOST = "localhost";
+    private static final String SERVER_HOST = "172.31.249.174";
     private static final int SERVER_PORT = 8080;
 
     public static void main(String[] args) {

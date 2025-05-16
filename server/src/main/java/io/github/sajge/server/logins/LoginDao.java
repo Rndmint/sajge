@@ -16,22 +16,38 @@ public class LoginDao {
         logger.debug("LoginDao initialized");
     }
 
-    public boolean validate(String username, String password) throws SQLException, InterruptedException {
-        String sql = "SELECT password FROM users WHERE username = ?";
+    public boolean validate(String username, String hash)
+            throws SQLException, InterruptedException {
+        String sql = "SELECT hash FROM users WHERE username = ?";
         logger.trace("Executing SQL: {}", sql);
 
         List<Map<String, Object>> rows = queryExecutor.executeQuery(sql, username);
-        if (rows.isEmpty()) {
-            return false;
-        }
 
-        Object storedObj = rows.get(0).get("password");
+        Object storedObj = rows.getFirst().get("hash");
         if (storedObj == null) {
             return false;
         }
 
         String stored = storedObj.toString();
-        return stored.equals(password);
+        return stored.equals(hash);
+    }
+
+    public String getSalt(String username)
+            throws SQLException, InterruptedException {
+        String sql = "SELECT salt FROM users WHERE username = ?";
+        logger.trace("Executing SQL: {}", sql);
+
+        List<Map<String, Object>> rows = queryExecutor.executeQuery(sql, username);
+        if (rows.isEmpty()) {
+            return "";
+        }
+
+        Object storedObj = rows.getFirst().get("salt");
+        if (storedObj == null) {
+            return "";
+        }
+
+        return storedObj.toString();
     }
 
 }

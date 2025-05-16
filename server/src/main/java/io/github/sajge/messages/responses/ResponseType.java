@@ -6,6 +6,12 @@ public enum ResponseType {
     SIGNUP_RESULT,
     LOGIN_RESULT,
     DELETE_ACCOUNT_RESULT,
-    ERROR;
+    ERROR,
+    SCENE_CREATED,
+    PROJECT_CREATED,
+    USER_INVITED,
+
+    BATCH_RESULT,
+    PINGS
 
 }

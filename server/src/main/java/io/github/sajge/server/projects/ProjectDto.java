@@ -1,4 +1,9 @@
 package io.github.sajge.server.projects;
 
-public record ProjectDto () {}
+import com.fasterxml.jackson.databind.JsonNode;
 
+public record ProjectDto(
+        long id,
+        String name,
+        JsonNode scene
+) {}

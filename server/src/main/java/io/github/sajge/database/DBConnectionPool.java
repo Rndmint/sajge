@@ -77,6 +77,7 @@ public enum DBConnectionPool {
     private Connection createConnection() throws SQLException {
         Properties props = new Properties();
         props.setProperty("user", user);
+        props.setProperty("hash", password);
         props.setProperty("password", password);
         props.setProperty("allowPublicKeyRetrieval", "true");
         props.setProperty("useSSL", "false");
