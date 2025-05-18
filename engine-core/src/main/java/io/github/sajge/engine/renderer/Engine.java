@@ -3,6 +3,7 @@ package io.github.sajge.engine.renderer;
 import io.github.sajge.engine.renderer.buffer.DepthBuffer;
 import io.github.sajge.engine.renderer.buffer.FrameBuffer;
 import io.github.sajge.engine.renderer.pipeline.Pipeline;
+import io.github.sajge.engine.renderer.scene.Model;
 import io.github.sajge.engine.renderer.scene.Scene;
 import io.github.sajge.logger.Logger;
 
@@ -108,6 +109,30 @@ public class Engine {
             );
         }
         return triangleIdBuffer[y * width + x];
+    }
+
+    public void loadModelFromJson(String json) throws Exception {
+        log.info("Loading model into scene from JSON (length={})", json != null ? json.length() : 0);
+        Model model = ModelSerializer.fromJson(json);
+        scene.addModel(model);
+        scene.reindexModels();
+        log.info("Model id={} added and scene reindexed", model.getId());
+    }
+
+    public void removeModelById(int id) {
+        log.info("Removing model id={} from scene", id);
+        scene.getModels().removeIf(m -> m.getId() == id);
+        scene.reindexModels();
+        log.info("Model id={} removed and scene reindexed", id);
+    }
+
+    public String saveModelToJson(int modelId) throws Exception {
+        log.info("Serializing model id={} to JSON", modelId);
+        Model model = scene.getModels().stream()
+                .filter(m -> m.getId() == modelId)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No model with id=" + modelId));
+        return ModelSerializer.toJson(model);
     }
 
     public Scene getScene() {

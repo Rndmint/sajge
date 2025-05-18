@@ -1,10 +1,10 @@
 package io.github.sajge.server;
 
-import io.github.sajge.logger.Logger;
+import io.github.sajge.server.core.CoreServer;
 
 public class Main {
-    private static final Logger log = Logger.get(Main.class);
-    public static void main(String[] args) {
-        new Server().start();
+    public static void main(String[] args) throws Exception {
+        CoreServer srv = new CoreServer();
+        new Thread(srv).start();
     }
 }

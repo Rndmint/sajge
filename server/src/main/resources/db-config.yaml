@@ -1,0 +1,6 @@
+host: "172.31.253.73"
+port: 3306
+databaseName: "sajgedb"
+username: "root"
+password: "wsxedc"
+maxPoolSize: 10
