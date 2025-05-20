@@ -1,13 +1,15 @@
 package io.github.sajge.server.projects;
 
 import io.github.sajge.logger.Logger;
+import io.github.sajge.server.projects.lists.collaborated.CollaboratedProjectDto;
+import io.github.sajge.server.projects.lists.collaborators.CollaboratorDto;
+import io.github.sajge.server.projects.lists.invited.SentInviteDto;
 import io.github.sajge.server.projects.lists.pendings.PendingInviteDto;
+import io.github.sajge.server.projects.lists.projectncollab.OwnedProjectWithCollaboratorsDto;
 import io.github.sajge.server.security.SessionManager;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ProjectService {
     private static final Logger logger = Logger.get(ProjectService.class);
@@ -240,4 +242,88 @@ public class ProjectService {
         }
         return result;
     }
+
+    public List<SentInviteDto> listSentInvites(String token) throws Exception {
+        long ownerId = SessionManager.INSTANCE.getUserId(token);
+        List<Map<String, Object>> rows = dao.listSentInvitesByOwner(ownerId);
+
+        List<SentInviteDto> result = new ArrayList<>();
+        for (Map<String, Object> row : rows) {
+            result.add(new SentInviteDto(
+                    ((Number) row.get("invited_user_id")).longValue(),
+                    (String) row.get("invited_username"),
+                    ((Number) row.get("project_id")).longValue(),
+                    (String) row.get("access_key"),
+                    (String) row.get("status"),
+                    row.get("created_at").toString()
+            ));
+        }
+        return result;
+    }
+
+    public List<CollaboratedProjectDto> listCollaboratedProjects(String token) throws Exception {
+        long userId = SessionManager.INSTANCE.getUserId(token);
+        List<Map<String, Object>> rows = dao.listCollaboratedProjects(userId);
+
+        List<CollaboratedProjectDto> out = new ArrayList<>();
+        for (Map<String, Object> row : rows) {
+            out.add(new CollaboratedProjectDto(
+                    ((Number) row.get("id")).longValue(),
+                    (String) row.get("name"),
+                    (String) row.get("description"),
+                    (String) row.get("scene"),
+                    ((Number) row.get("owner_id")).longValue(),
+                    row.get("created_at").toString()
+            ));
+        }
+        return out;
+    }
+
+    public List<CollaboratorDto> listProjectCollaborators(String token) throws Exception {
+        long ownerId = SessionManager.INSTANCE.getUserId(token);
+        List<Map<String, Object>> rows = dao.listCollaboratorsByOwner(ownerId);
+
+        List<CollaboratorDto> out = new ArrayList<>();
+        for (Map<String, Object> row : rows) {
+            out.add(new CollaboratorDto(
+                    ((Number) row.get("collaborator_id")).longValue(),
+                    (String) row.get("collaborator_username")
+            ));
+        }
+        return out;
+    }
+
+    public List<OwnedProjectWithCollaboratorsDto> listOwnedProjectsWithCollaborators(String token)
+            throws Exception {
+        long ownerId = SessionManager.INSTANCE.getUserId(token);
+        List<Map<String,Object>> rows =
+                dao.listOwnedProjectsWithCollaborators(ownerId);
+
+        Map<Long, OwnedProjectWithCollaboratorsDto.Builder> map = new LinkedHashMap<>();
+        for (Map<String,Object> row : rows) {
+            long pid = ((Number)row.get("project_id")).longValue();
+            OwnedProjectWithCollaboratorsDto.Builder b = map.get(pid);
+            if (b == null) {
+                b = new OwnedProjectWithCollaboratorsDto.Builder(
+                        pid,
+                        (String) row.get("project_name"),
+                        (String) row.get("project_description"),
+                        (String) row.get("project_scene"),
+                        ownerId,
+                        row.get("project_created_at").toString()
+                );
+                map.put(pid, b);
+            }
+            Object collIdObj = row.get("collaborator_id");
+            if (collIdObj != null) {
+                long collId = ((Number)collIdObj).longValue();
+                String collName = (String) row.get("collaborator_username");
+                b.addCollaborator(new CollaboratorDto(collId, collName));
+            }
+        }
+        return map.values().stream()
+                .map(OwnedProjectWithCollaboratorsDto.Builder::build)
+                .collect(Collectors.toList());
+    }
+
 }

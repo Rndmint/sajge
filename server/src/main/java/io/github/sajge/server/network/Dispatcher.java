@@ -67,14 +67,26 @@ public class Dispatcher {
     }
 
     private void readLoop(Socket socket) {
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))) {
+        try (
+                socket;
+                BufferedReader in =
+                                    new BufferedReader(
+                                    new InputStreamReader(
+                                            socket.getInputStream()));
+                BufferedWriter out =
+                                    new BufferedWriter(
+                                    new OutputStreamWriter(
+                                            socket.getOutputStream()))
+        ) {
             String line;
             JavaType rawType = objectMapper.getTypeFactory()
                     .constructParametricType(Envelope.class, RequestType.class, JsonNode.class);
-            while ((line = in.readLine()) != null) {
+            while (
+                    (line = in.readLine()) != null
+            ) {
                 Envelope<RequestType, JsonNode> raw = objectMapper.readValue(line, rawType);
                 Route route = routes.get(raw.getType());
+
                 if (route != null) {
                     Object payload = objectMapper.convertValue(raw.getPayload(), route.getPayloadClass());
                     Envelope<RequestType, Object> env = new Envelope<>();

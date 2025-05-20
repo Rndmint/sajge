@@ -6,6 +6,10 @@ import io.github.sajge.server.accounts.deletes.DeleteHandler;
 import io.github.sajge.server.accounts.deletes.DeleteService;
 import io.github.sajge.server.accounts.logouts.LogoutDto;
 import io.github.sajge.server.accounts.logouts.LogoutHandler;
+import io.github.sajge.server.accounts.users.ListUsersDto;
+import io.github.sajge.server.accounts.users.ListUsersHandler;
+import io.github.sajge.server.accounts.users.UserDao;
+import io.github.sajge.server.accounts.users.UserService;
 import io.github.sajge.server.echos.EchoDto;
 import io.github.sajge.server.accounts.logins.LoginDao;
 import io.github.sajge.database.DBConnectionPool;
@@ -34,8 +38,16 @@ import io.github.sajge.server.projects.invites.refuses.RefuseInviteDto;
 import io.github.sajge.server.projects.invites.refuses.RefuseInviteHandler;
 import io.github.sajge.server.projects.lists.ListOwnedProjectsDto;
 import io.github.sajge.server.projects.lists.ListOwnedProjectsHandler;
+import io.github.sajge.server.projects.lists.collaborated.ListCollaboratedProjectsDto;
+import io.github.sajge.server.projects.lists.collaborated.ListCollaboratedProjectsHandler;
+import io.github.sajge.server.projects.lists.collaborators.ListProjectCollaboratorsDto;
+import io.github.sajge.server.projects.lists.collaborators.ListProjectCollaboratorsHandler;
+import io.github.sajge.server.projects.lists.invited.ListSentInvitesDto;
+import io.github.sajge.server.projects.lists.invited.ListSentInvitesHandler;
 import io.github.sajge.server.projects.lists.pendings.ListPendingInvitesDto;
 import io.github.sajge.server.projects.lists.pendings.ListPendingInvitesHandler;
+import io.github.sajge.server.projects.lists.projectncollab.ListOwnedProjectsWithCollaboratorsDto;
+import io.github.sajge.server.projects.lists.projectncollab.ListOwnedProjectsWithCollaboratorsHandler;
 import io.github.sajge.server.projects.removes.RemoveCollaboratorDto;
 import io.github.sajge.server.projects.removes.RemoveCollaboratorHandler;
 import io.github.sajge.server.projects.updates.UpdateProjectDto;
@@ -143,7 +155,37 @@ public class Server {
                             new Dispatcher.Route(
                                     new ListPendingInvitesHandler(
                                             new ProjectService(
-                                                    new ProjectDao())), ListPendingInvitesDto.class))
+                                                    new ProjectDao())), ListPendingInvitesDto.class)),
+                    entry(
+                            RequestType.LIST_SENT_INVITES,
+                            new Dispatcher.Route(
+                                    new ListSentInvitesHandler(
+                                            new ProjectService(
+                                                    new ProjectDao())), ListSentInvitesDto.class)),
+                    entry(
+                            RequestType.LIST_USERS,
+                            new Dispatcher.Route(
+                                    new ListUsersHandler(
+                                            new UserService(
+                                                    new UserDao())), ListUsersDto.class)),
+                    entry(
+                            RequestType.LIST_COLLABORATED_PROJECTS,
+                            new Dispatcher.Route(
+                                    new ListCollaboratedProjectsHandler(
+                                            new ProjectService(
+                                                    new ProjectDao())), ListCollaboratedProjectsDto.class)),
+                    entry(
+                            RequestType.LIST_PROJECT_COLLABORATORS,
+                            new Dispatcher.Route(
+                                    new ListProjectCollaboratorsHandler(
+                                            new ProjectService(
+                                                    new ProjectDao())), ListProjectCollaboratorsDto.class)),
+                    entry(
+                            RequestType.LIST_OWNED_PROJECTS_WITH_COLLABORATORS,
+                            new Dispatcher.Route(
+                                    new ListOwnedProjectsWithCollaboratorsHandler(
+                                            new ProjectService(
+                                                    new ProjectDao())), ListOwnedProjectsWithCollaboratorsDto.class))
             );
 
             Dispatcher dispatcher = new Dispatcher(

@@ -62,7 +62,7 @@ public class QueryExecutor {
             while (rs.next()) {
                 Map<String, Object> row = new HashMap<>();
                 for (int i = 1; i <= columnCount; i++) {
-                    String columnName = metaData.getColumnName(i);
+                    String columnName = metaData.getColumnLabel(i);
                     Object value = rs.getObject(i);
                     row.put(columnName, value);
                     logger.trace("Row column {}: name={}, value={}", i, columnName, value);

@@ -110,7 +110,7 @@ public class ProjectDao {
     public List<Map<String,Object>> listPendingInvitesForUser(long userId)
             throws SQLException, InterruptedException {
         String sql =
-                "SELECT u.id   AS inviter_id,  " +
+                        "SELECT u.id   AS inviter_id,  " +
                         "       u.username AS inviter_username,  " +
                         "       pp.project_id,               " +
                         "       pp.access_key,               " +
@@ -120,7 +120,75 @@ public class ProjectDao {
                         "  JOIN users u     ON p.owner_id     = u.id " +
                         " WHERE pp.user_id    = ?           " +
                         "   AND pp.status     = 'pending'";
+
         logger.trace("SQL: {}", sql);
         return queryExecutor.executeQuery(sql, userId);
     }
+
+    public List<Map<String,Object>> listSentInvitesByOwner(long ownerId)
+            throws SQLException, InterruptedException {
+        String sql =
+                        "SELECT u.id           AS invited_user_id,   " +
+                        "       u.username     AS invited_username, " +
+                        "       pp.project_id,                          " +
+                        "       pp.access_key,                          " +
+                        "       pp.created_at,                          " +
+                        "       pp.status                                " +
+                        "  FROM project_permissions pp                " +
+                        "  JOIN projects p ON pp.project_id = p.id    " +
+                        "  JOIN users u    ON pp.user_id    = u.id    " +
+                        " WHERE p.owner_id = ?";
+
+        logger.trace("SQL: {}", sql);
+        return queryExecutor.executeQuery(sql, ownerId);
+    }
+
+    public List<Map<String,Object>> listCollaboratedProjects(long userId)
+            throws SQLException, InterruptedException {
+        String sql =
+                        "SELECT p.id, p.name, p.description, p.scene, p.owner_id, p.created_at " +
+                        "  FROM projects p " +
+                        "  JOIN project_permissions pp ON p.id = pp.project_id " +
+                        " WHERE pp.user_id = ? " +
+                        "   AND pp.status  = 'accepted'";
+
+        logger.trace("SQL: {}", sql);
+        return queryExecutor.executeQuery(sql, userId);
+    }
+
+    public List<Map<String,Object>> listCollaboratorsByOwner(long ownerId)
+            throws SQLException, InterruptedException {
+        String sql =
+                        "SELECT DISTINCT u.id   AS collaborator_id,  " +
+                        "                u.username AS collaborator_username " +
+                        "  FROM project_permissions pp               " +
+                        "  JOIN projects p ON pp.project_id = p.id   " +
+                        "  JOIN users u    ON pp.user_id    = u.id   " +
+                        " WHERE p.owner_id = ?                       " +
+                        "   AND pp.status  = 'accepted'";
+        logger.trace("SQL: {}", sql);
+        return queryExecutor.executeQuery(sql, ownerId);
+    }
+
+    public List<Map<String,Object>> listOwnedProjectsWithCollaborators(long ownerId)
+            throws SQLException, InterruptedException {
+        String sql =
+                        "SELECT p.id                AS project_id,  " +
+                        "       p.name              AS project_name," +
+                        "       p.description       AS project_description," +
+                        "       p.scene             AS project_scene," +
+                        "       p.created_at        AS project_created_at," +
+                        "       u.id                AS collaborator_id," +
+                        "       u.username          AS collaborator_username " +
+                        "  FROM projects p " +
+                        "  LEFT JOIN project_permissions pp " +
+                        "    ON pp.project_id = p.id AND pp.status = 'accepted' " +
+                        "  LEFT JOIN users u " +
+                        "    ON u.id = pp.user_id " +
+                        " WHERE p.owner_id = ?";
+
+        logger.trace("SQL: {}", sql);
+        return queryExecutor.executeQuery(sql, ownerId);
+    }
+
 }
