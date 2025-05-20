@@ -2,9 +2,8 @@ package io.github.sajge.server.echos;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.sajge.messages.Envelope;
-import io.github.sajge.logger.Logger;
 import io.github.sajge.messages.responses.ResponseType;
-import io.github.sajge.messages.resquests.RequestType;
+import io.github.sajge.messages.requests.RequestType;
 import io.github.sajge.server.patterns.Handler;
 
 public class EchoHandler implements Handler<Envelope<RequestType,EchoDto>> {

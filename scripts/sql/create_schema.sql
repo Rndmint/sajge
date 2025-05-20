@@ -5,13 +5,15 @@ USE sajge_db;
 CREATE TABLE users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
+    hash VARCHAR(255) NOT NULL,
+    salt VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE projects (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
+    description TEXT,
     owner_id BIGINT NOT NULL,
     scene JSON NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -25,10 +27,7 @@ CREATE TABLE project_permissions (
     status     ENUM('pending','accepted','revoked') NOT NULL DEFAULT 'pending',
     access_key CHAR(36)  NOT NULL UNIQUE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    expires_at TIMESTAMP NULL,
     PRIMARY KEY (user_id, project_id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
 );
-
-

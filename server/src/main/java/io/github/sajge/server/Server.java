@@ -1,24 +1,52 @@
 package io.github.sajge.server;
 
+import io.github.sajge.server.accounts.deletes.DeleteDao;
+import io.github.sajge.server.accounts.deletes.DeleteDto;
+import io.github.sajge.server.accounts.deletes.DeleteHandler;
+import io.github.sajge.server.accounts.deletes.DeleteService;
+import io.github.sajge.server.accounts.logouts.LogoutDto;
+import io.github.sajge.server.accounts.logouts.LogoutHandler;
 import io.github.sajge.server.echos.EchoDto;
-import io.github.sajge.server.echos.EchoResponseDto;
-import io.github.sajge.server.logins.LoginDao;
+import io.github.sajge.server.accounts.logins.LoginDao;
 import io.github.sajge.database.DBConnectionPool;
-import io.github.sajge.messages.resquests.RequestType;
-import io.github.sajge.server.logins.LoginDto;
-import io.github.sajge.server.logins.LoginHandler;
-import io.github.sajge.server.logins.LoginService;
-import io.github.sajge.server.patterns.Handler;
-import io.github.sajge.server.signups.SignupDto;
-import io.github.sajge.server.signups.SignupService;
+import io.github.sajge.messages.requests.RequestType;
+import io.github.sajge.server.accounts.logins.LoginDto;
+import io.github.sajge.server.accounts.logins.LoginHandler;
+import io.github.sajge.server.accounts.logins.LoginService;
+import io.github.sajge.server.accounts.signups.SignupDto;
+import io.github.sajge.server.accounts.signups.SignupService;
 import io.github.sajge.logger.Logger;
-import io.github.sajge.server.signups.SignupDao;
+import io.github.sajge.server.accounts.signups.SignupDao;
 import io.github.sajge.server.echos.EchoHandler;
-import io.github.sajge.server.signups.SignupHandler;
+import io.github.sajge.server.accounts.signups.SignupHandler;
 import io.github.sajge.server.network.Dispatcher;
+import io.github.sajge.server.projects.ProjectDao;
+import io.github.sajge.server.projects.ProjectService;
+import io.github.sajge.server.projects.creates.CreateProjectDto;
+import io.github.sajge.server.projects.creates.CreateProjectHandler;
+import io.github.sajge.server.projects.deletes.DeleteProjectDto;
+import io.github.sajge.server.projects.deletes.DeleteProjectHandler;
+import io.github.sajge.server.projects.invites.InviteCollaboratorDto;
+import io.github.sajge.server.projects.invites.InviteCollaboratorHandler;
+import io.github.sajge.server.projects.invites.accepts.AcceptInviteDto;
+import io.github.sajge.server.projects.invites.accepts.AcceptInviteHandler;
+import io.github.sajge.server.projects.invites.refuses.RefuseInviteDto;
+import io.github.sajge.server.projects.invites.refuses.RefuseInviteHandler;
+import io.github.sajge.server.projects.lists.ListOwnedProjectsDto;
+import io.github.sajge.server.projects.lists.ListOwnedProjectsHandler;
+import io.github.sajge.server.projects.lists.pendings.ListPendingInvitesDto;
+import io.github.sajge.server.projects.lists.pendings.ListPendingInvitesHandler;
+import io.github.sajge.server.projects.removes.RemoveCollaboratorDto;
+import io.github.sajge.server.projects.removes.RemoveCollaboratorHandler;
+import io.github.sajge.server.projects.updates.UpdateProjectDto;
+import io.github.sajge.server.projects.updates.UpdateProjectHandler;
+import io.github.sajge.server.sessionchecks.CheckSessionDto;
+import io.github.sajge.server.sessionchecks.CheckSessionHandler;
 
 import java.sql.SQLException;
 import java.util.Map;
+
+import static java.util.Map.entry;
 
 public class Server {
     private static final Logger logger = Logger.get(Server.class);
@@ -31,22 +59,91 @@ public class Server {
         try {
             logger.info("Starting server on port {}", SERVER_PORT);
 
-            var routes = Map.<RequestType, Dispatcher.Route>of(
-                    RequestType.ECHO,
-                    new Dispatcher.Route(new EchoHandler(),
-                                        EchoDto.class),
-
-                    RequestType.SIGNUP,
-                    new Dispatcher.Route(new SignupHandler(
-                                        new SignupService(
-                                                new SignupDao())),
-                                                SignupDto.class),
-
-                    RequestType.LOGIN,
-                    new Dispatcher.Route(new LoginHandler(
-                                        new LoginService(
-                                                new LoginDao())),
-                                                LoginDto.class)
+            var routes = Map.ofEntries(
+                    entry(
+                            RequestType.ECHO,
+                            new Dispatcher.Route(
+                                    new EchoHandler(), EchoDto.class)),
+                    entry(
+                            RequestType.SIGNUP,
+                            new Dispatcher.Route(
+                                    new SignupHandler(
+                                            new SignupService(
+                                                    new SignupDao())), SignupDto.class)),
+                    entry(
+                            RequestType.LOGIN,
+                            new Dispatcher.Route(
+                                    new LoginHandler(
+                                            new LoginService(
+                                                    new LoginDao())), LoginDto.class)),
+                    entry(
+                            RequestType.LOGOUT,
+                            new Dispatcher.Route(
+                                    new LogoutHandler(), LogoutDto.class)),
+                    entry(
+                            RequestType.CHECK_SESSION,
+                            new Dispatcher.Route(
+                                    new CheckSessionHandler(), CheckSessionDto.class)),
+                    entry(
+                            RequestType.DELETE_ACCOUNT,
+                            new Dispatcher.Route(
+                                    new DeleteHandler(
+                                            new DeleteService(
+                                                    new DeleteDao())), DeleteDto.class)),
+                    entry(
+                            RequestType.CREATE_PROJECT,
+                            new Dispatcher.Route(
+                                    new CreateProjectHandler(
+                                            new ProjectService(
+                                                    new ProjectDao())), CreateProjectDto.class)),
+                    entry(
+                            RequestType.UPDATE_PROJECT,
+                            new Dispatcher.Route(
+                                    new UpdateProjectHandler(
+                                            new ProjectService(
+                                                    new ProjectDao())), UpdateProjectDto.class)),
+                    entry(
+                            RequestType.DELETE_PROJECT,
+                            new Dispatcher.Route(
+                                    new DeleteProjectHandler(
+                                            new ProjectService(
+                                                    new ProjectDao())), DeleteProjectDto.class)),
+                    entry(
+                            RequestType.INVITE_COLLABORATOR,
+                            new Dispatcher.Route(
+                                    new InviteCollaboratorHandler(
+                                            new ProjectService(
+                                                    new ProjectDao())), InviteCollaboratorDto.class)),
+                    entry(
+                            RequestType.ACCEPT_INVITE,
+                            new Dispatcher.Route(
+                                    new AcceptInviteHandler(
+                                            new ProjectService(
+                                                    new ProjectDao())), AcceptInviteDto.class)),
+                    entry(
+                            RequestType.REMOVE_COLLABORATOR,
+                            new Dispatcher.Route(
+                                    new RemoveCollaboratorHandler(
+                                            new ProjectService(
+                                                    new ProjectDao())), RemoveCollaboratorDto.class)),
+                    entry(
+                            RequestType.REFUSE_INVITE,
+                            new Dispatcher.Route(
+                                    new RefuseInviteHandler(
+                                            new ProjectService(
+                                                    new ProjectDao())), RefuseInviteDto.class)),
+                    entry(
+                            RequestType.LIST_OWNED_PROJECTS,
+                            new Dispatcher.Route(
+                                    new ListOwnedProjectsHandler(
+                                            new ProjectService(
+                                                    new ProjectDao())), ListOwnedProjectsDto.class)),
+                    entry(
+                            RequestType.LIST_PENDING_INVITES,
+                            new Dispatcher.Route(
+                                    new ListPendingInvitesHandler(
+                                            new ProjectService(
+                                                    new ProjectDao())), ListPendingInvitesDto.class))
             );
 
             Dispatcher dispatcher = new Dispatcher(

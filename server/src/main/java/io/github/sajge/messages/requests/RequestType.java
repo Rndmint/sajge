@@ -1,0 +1,24 @@
+package io.github.sajge.messages.requests;
+
+public enum RequestType {
+    ECHO,
+
+    SIGNUP,
+    LOGIN,
+    LOGOUT,
+    CHECK_SESSION,
+    DELETE_ACCOUNT,
+
+    CREATE_PROJECT,
+    UPDATE_PROJECT,
+    DELETE_PROJECT,
+
+    INVITE_COLLABORATOR,
+    REMOVE_COLLABORATOR,
+
+    ACCEPT_INVITE,
+    REFUSE_INVITE,
+
+    LIST_OWNED_PROJECTS,
+    LIST_PENDING_INVITES;
+}

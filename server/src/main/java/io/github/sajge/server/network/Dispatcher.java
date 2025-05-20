@@ -3,7 +3,7 @@ package io.github.sajge.server.network;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.sajge.messages.resquests.RequestType;
+import io.github.sajge.messages.requests.RequestType;
 import io.github.sajge.messages.Envelope;
 import io.github.sajge.server.patterns.Handler;
 import io.github.sajge.logger.Logger;

@@ -1,8 +1,5 @@
 package io.github.sajge.messages;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import io.github.sajge.messages.resquests.RequestType;
-
 public class Envelope<T, P> {
 
     private T type;
