@@ -31,13 +31,13 @@ public class Client {
             //jsonPayload = "{\"type\":\"REMOVE_COLLABORATOR\",\"payload\":{\"token\":\"38ee348a-c8f1-460c-a758-745b02d9c073\",\"projectId\":2,\"collaboratorUserId\":2}}";
             //jsonPayload = "{\"type\":\"REFUSE_INVITE\",\"payload\":{\"token\":\"18ca3eb5-da4b-41c2-95d0-c44f429cbed9\",\"accessKey\":\"545a1697-f61c-4bb6-a8a9-747f3a97c7ae\"}}";
 
-            //jsonPayload = "{\"type\":\"LIST_OWNED_PROJECTS\",\"payload\":{\"token\":\"f9ef1792-088c-416e-bdae-c136cbe97e94\"}}";
+            //jsonPayload = "{\"type\":\"LIST_OWNED_PROJECTS\",\"payload\":{\"token\":\"a96c36c0-d997-440f-9821-8ce36d208393\"}}";
 
             //jsonPayload = "{\"type\":\"LIST_PENDING_INVITES\",\"payload\":{\"token\":\"0c6f78d8-63a8-48fd-84cc-b4068cfc4ab0\"}}";
 
             //jsonPayload = "{\"type\":\"LIST_SENT_INVITES\",\"payload\":{\"token\":\"1306c3a5-39c7-459f-8007-3cd27977e363\"}}";
 
-            //jsonPayload = "{\"type\":\"LIST_USERS\",\"payload\":{\"token\":\"3847ca6c-20d0-47ce-98a3-a0bc5d79395c\"}}";
+            //jsonPayload = "{\"type\":\"LIST_USERS\",\"payload\":{\"token\":\"5d29013d-8532-41c4-8ef5-4a4e4f023af9\"}}";
 
             //jsonPayload = "{\"type\":\"LIST_COLLABORATED_PROJECTS\",\"payload\":{\"token\":\"d18ef122-ffaa-4210-a064-19cfa1ba9553\"}}";
 
