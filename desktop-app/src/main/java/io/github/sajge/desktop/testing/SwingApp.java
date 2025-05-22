@@ -1,18 +1,23 @@
 package io.github.sajge.desktop.testing;
 
 import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.extras.FlatSVGIcon;
+import io.github.sajge.logger.Logger;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SwingApp extends JFrame {
     private static final int COLLAPSED_WIDTH = 60;
     private static final int EXPANDED_WIDTH = 200;
+    private static final int ICON_SIZE = 24;
+
+    private static final Logger log = Logger.get(SwingApp.class);
 
     private final JPanel sidePanel;
     private final CardLayout mainCards = new CardLayout();
@@ -23,14 +28,14 @@ public class SwingApp extends JFrame {
     private boolean expanded = true;
 
     public SwingApp() {
-        super("FlatLaf Swing App");
+        super("Swing App");
         FlatLightLaf.setup();
+        log.info("Starting SwingApp UI");
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        sidePanel = new JPanel();
-        sidePanel.setLayout(new BorderLayout());
+        sidePanel = new JPanel(new BorderLayout());
         sidePanel.setBackground(UIManager.getColor("Panel.background"));
         sidePanel.setPreferredSize(new Dimension(EXPANDED_WIDTH, getHeight()));
 
@@ -41,11 +46,11 @@ public class SwingApp extends JFrame {
         ButtonGroup navGroup = new ButtonGroup();
 
         for (String name : names) {
-            FlatSVGIcon icon = loadIcon("/icons/flat/" + name.toLowerCase() + ".svg", 20);
+            ImageIcon icon = loadIcon("icons/flat/" + name.toLowerCase() + ".png");
             JToggleButton btn = new JToggleButton(name, icon);
             btn.setAlignmentX(Component.LEFT_ALIGNMENT);
             btn.setHorizontalAlignment(SwingConstants.LEFT);
-            btn.setIconTextGap(10);
+            btn.setIconTextGap(8);
             btn.setBorder(new EmptyBorder(8, 12, 8, 12));
             btn.setFocusPainted(false);
             btn.setBackground(UIManager.getColor("Button.background"));
@@ -58,10 +63,10 @@ public class SwingApp extends JFrame {
         navWrapper.add(Box.createVerticalGlue());
         sidePanel.add(navWrapper, BorderLayout.NORTH);
 
-        FlatSVGIcon toggleIcon = loadIcon("/icons/flat/menu.svg", 16);
+        ImageIcon toggleIcon = loadIcon("icons/flat/menu.png");
         JButton toggle = new JButton(toggleIcon);
         toggle.setToolTipText("Toggle navigation");
-        toggle.setBorder(null);
+        toggle.setBorderPainted(false);
         toggle.setFocusPainted(false);
         toggle.setContentAreaFilled(false);
         toggle.addActionListener(this::toggleSidePanel);
@@ -100,10 +105,24 @@ public class SwingApp extends JFrame {
         setSize(900, 650);
         setLocationRelativeTo(null);
         setVisible(true);
+        log.info("SwingApp UI visible");
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                UIManager.setLookAndFeel(new FlatLightLaf());
+                log.info("FlatLightLaf set as look and feel.");
+            } catch (Exception ex) {
+                log.error("Failed to set look and feel.", ex);
+            }
+            new SwingApp();
+        });
     }
 
     private void toggleSidePanel(ActionEvent e) {
         expanded = !expanded;
+        log.debug("Toggling side panel: expanded={}", expanded);
         int width = expanded ? EXPANDED_WIDTH : COLLAPSED_WIDTH;
         sidePanel.setPreferredSize(new Dimension(width, getHeight()));
 
@@ -118,23 +137,35 @@ public class SwingApp extends JFrame {
     }
 
     private void switchView(String name) {
+        log.debug("Switching view to '{}'.", name);
         mainCards.show(mainPanel, name);
         rightCards.show(rightPanel, name);
     }
 
-    private FlatSVGIcon loadIcon(String path, int size) {
-        FlatSVGIcon icon = new FlatSVGIcon(String.valueOf(getClass().getResource(path)), size, size);
-        return icon;
+    private ImageIcon loadIcon(String resourceName) {
+        URL res = getClass().getClassLoader().getResource(resourceName);
+        if (res == null) {
+            log.warn("Icon resource not found: {}. Using default error icon.", resourceName);
+            Icon err = UIManager.getIcon("OptionPane.errorIcon");
+            Image img = toImage(err);
+            Image scaled = img.getScaledInstance(ICON_SIZE, ICON_SIZE, Image.SCALE_SMOOTH);
+            return new ImageIcon(scaled);
+        }
+        ImageIcon raw = new ImageIcon(res);
+        Image image = raw.getImage().getScaledInstance(ICON_SIZE, ICON_SIZE, Image.SCALE_SMOOTH);
+        return new ImageIcon(image);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            try {
-                UIManager.setLookAndFeel(new FlatLightLaf());
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            new SwingApp();
-        });
+    private Image toImage(Icon icon) {
+        if (icon instanceof ImageIcon) {
+            return ((ImageIcon) icon).getImage();
+        }
+        BufferedImage buff = new BufferedImage(
+                icon.getIconWidth(), icon.getIconHeight(),
+                BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = buff.createGraphics();
+        icon.paintIcon(null, g2, 0, 0);
+        g2.dispose();
+        return buff;
     }
 }

@@ -1,45 +1,47 @@
 package io.github.sajge.desktop;
 
-import io.github.sajge.desktop.placeholders.PlaceholderPanel;
-import io.github.sajge.logger.Logger;
+import io.github.sajge.client.ClientService;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class MainFrame extends JFrame {
-    private static final Logger log = Logger.get(MainFrame.class);
+    private static final String CARD_AUTH = "AUTH";
+    private static final String CARD_APP = "APP";
 
-    private final JPanel northPanel;
-    private final JPanel southPanel;
-    private final JPanel eastPanel;
-    private final JPanel westPanel;
-    private final JPanel centerPanel;
+    private final CardLayout cardLayout = new CardLayout();
+    private final JPanel cards = new JPanel(cardLayout);
+
+    private final ClientService service;
+    private final AuthPanel authPanel;
+    private final AppPanel appPanel;
 
     public MainFrame() {
-        log.debug("MainFrame constructor");
-        northPanel  = new PlaceholderPanel();
-        southPanel  = new PlaceholderPanel();
-        eastPanel   = new PlaceholderPanel();
-        westPanel   = new LeftSidePanel();
-        centerPanel = new PlaceholderPanel();
+        super("Sajge Swing Client");
+        this.service = new ClientService();
+        this.authPanel = new AuthPanel(this, service);
+        this.appPanel = new AppPanel(this, service);
 
-        initUI();
+        cards.add(authPanel, CARD_AUTH);
+        cards.add(appPanel, CARD_APP);
+
+        setContentPane(cards);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(800, 600);
+        setLocationRelativeTo(null);
+        showAuth();
     }
 
-    private void initUI() {
-        log.debug("Initializing MainFrame UI");
-        setTitle("Sajge");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 300);
-        setLocationRelativeTo(null);
-        log.info("MainFrame size={}x{}", getWidth(), getHeight());
+    public void showApp(String username) {
+        appPanel.getProfileTab().setUsername(username);
+        cardLayout.show(cards, CARD_APP);
+    }
 
-        add(northPanel, BorderLayout.NORTH);
-        add(southPanel, BorderLayout.SOUTH);
-        add(eastPanel, BorderLayout.EAST);
-        add(westPanel, BorderLayout.WEST);
-        add(centerPanel, BorderLayout.CENTER);
-
-        log.debug("MainFrame UI components added");
+    public void showAuth() {
+        service.setToken("");
+        authPanel.clearFields();
+        appPanel.resetAllTabs();
+        cards.add(authPanel, CARD_AUTH);
+        cardLayout.show(cards, CARD_AUTH);
     }
 }
