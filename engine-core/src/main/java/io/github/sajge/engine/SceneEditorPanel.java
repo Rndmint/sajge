@@ -27,7 +27,7 @@ public class SceneEditorPanel extends JPanel {
     private static final Logger log = Logger.get(SceneEditorPanel.class);
     private static final Map<String, String> primitiveJsons = new LinkedHashMap<>();
     static {
-        List<String> names = List.of("cube", "pyramid", "tetrahedron", "octahedron", "sphere");
+        List<String> names = List.of("cube", "pyramid", "tetrahedron", "octahedron", "tetrahedron");
         for (String name : names) {
             String path = "/primitives/" + name + ".json";
             try (InputStream in = SceneEditorPanel.class.getResourceAsStream(path)) {
