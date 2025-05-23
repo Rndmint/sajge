@@ -10,7 +10,6 @@ public class AppPanel extends JPanel {
     private final ProjectsTab projectsTab;
     private final PendingInvitesTab pendingTab;
     private final SentInvitesTab sentTab;
-    private final SceneEditorTab sceneTab;
 
     public AppPanel(MainFrame frame, ClientService service) {
         setLayout(new BorderLayout());
@@ -20,13 +19,11 @@ public class AppPanel extends JPanel {
         projectsTab = new ProjectsTab(service);
         pendingTab = new PendingInvitesTab(service);
         sentTab = new SentInvitesTab(service);
-        sceneTab = new SceneEditorTab();  // placeholder
 
         tabs.addTab("Profile", profileTab);
         tabs.addTab("Projects", projectsTab);
         tabs.addTab("Pending Invites", pendingTab);
         tabs.addTab("Sent Invites", sentTab);
-        tabs.addTab("Scene Editor", sceneTab);
 
         add(tabs, BorderLayout.CENTER);
     }

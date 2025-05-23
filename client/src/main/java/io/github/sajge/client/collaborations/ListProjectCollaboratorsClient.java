@@ -32,7 +32,12 @@ public class ListProjectCollaboratorsClient
     public static record CollaboratorDto(
             @JsonProperty("id")       long id,
             @JsonProperty("username") String username
-    ) {}
+    ) {
+        @Override
+        public String toString() {
+            return username;
+        }
+    }
 
     public static record SuccessResponse(
             @JsonProperty("success")       boolean success,
