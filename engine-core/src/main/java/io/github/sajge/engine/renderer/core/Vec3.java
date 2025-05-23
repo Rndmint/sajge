@@ -1,10 +1,14 @@
 package io.github.sajge.engine.renderer.core;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.github.sajge.logger.Logger;
 
 import java.util.List;
 
+@JsonSerialize(using = Vec3Serializer.class)
+@JsonFormat(shape = JsonFormat.Shape.ARRAY)
 public class Vec3 {
     private static final Logger log = Logger.get(Vec3.class);
 

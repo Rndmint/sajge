@@ -1,6 +1,7 @@
 package io.github.sajge.engine.renderer.scene;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.sajge.engine.renderer.core.Mat4;
 import io.github.sajge.logger.Logger;
@@ -109,6 +110,7 @@ public class Camera {
         this.far = far;
     }
 
+    @JsonIgnore
     public Mat4 getViewMatrix() {
         log.debug("Computing view matrix for Camera id={}", id);
         Transform t = transform;
@@ -125,6 +127,7 @@ public class Camera {
         return view;
     }
 
+    @JsonIgnore
     public Mat4 getProjectionMatrix() {
         log.debug("Computing projection matrix with fovY={}, aspect={}, near={}, far={}", fovY, aspect, near, far);
         Mat4 proj = Mat4.perspective(fovY, aspect, near, far);

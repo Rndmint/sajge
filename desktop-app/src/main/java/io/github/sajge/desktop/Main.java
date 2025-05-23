@@ -9,7 +9,12 @@ public class Main {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            MainFrame mf = new MainFrame();
+            MainFrame mf = null;
+            try {
+                mf = new MainFrame();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             mf.setVisible(true);
         });
     }

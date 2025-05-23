@@ -5,6 +5,7 @@ import io.github.sajge.client.accounts.ListUsersClient.UserDto;
 import io.github.sajge.client.collaborations.ListProjectCollaboratorsClient.CollaboratorDto;
 import io.github.sajge.client.projects.ListCollaboratedProjectsClient.CollaboratedProjectDto;
 import io.github.sajge.client.projects.ListOwnedProjectsWithCollaboratorsClient.OwnedProjectDto;
+import io.github.sajge.engine.SceneEditorPanel;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -34,7 +35,13 @@ public class ProjectsTab extends JPanel {
     private final JButton updateBtn = new JButton("Update");
     private final JButton deleteBtn = new JButton("Delete");
     private final JButton inviteBtn = new JButton("Invite…");
+
+
+    private final JButton editSceneBtn = new JButton("Edit Scene");
+
+
     private Mode currentMode = Mode.OWNED;
+
     public ProjectsTab(ClientService service) {
         this.service = service;
         this.projectTable = new JTable(ownedModel);
@@ -116,6 +123,11 @@ public class ProjectsTab extends JPanel {
         btns.add(updateBtn);
         btns.add(deleteBtn);
         btns.add(inviteBtn);
+
+        btns.add(editSceneBtn);
+        editSceneBtn.setEnabled(false);
+        editSceneBtn.addActionListener(e -> openSceneEditor());
+
         gbc.gridx = 0;
         gbc.gridy = y;
         gbc.gridwidth = 2;
@@ -223,6 +235,8 @@ public class ProjectsTab extends JPanel {
             inviteBtn.setEnabled(false);
         }
 
+        editSceneBtn.setEnabled(true);
+
         ownerLabel.setText(isOwner ? "Yes" : "No");
         idLabel.setText(String.valueOf(pid));
         nameField.setText(name);
@@ -250,6 +264,7 @@ public class ProjectsTab extends JPanel {
     }
 
     private void clearDetail() {
+        editSceneBtn.setEnabled(false);
         idLabel.setText("");
         ownerLabel.setText("");
         nameField.setText("");
@@ -452,6 +467,87 @@ public class ProjectsTab extends JPanel {
             }
         }.execute();
     }
+
+    private void openSceneEditor() {
+        int row = projectTable.getSelectedRow();
+        if (row < 0) return;
+
+        final long projectId;
+        final String projectName;
+        final String projectDesc;
+        final String initialSceneJson;
+        if (currentMode == Mode.OWNED) {
+            var p = ownedModel.getProjectAt(row);
+            projectId       = p.id();
+            projectName     = p.name();
+            projectDesc     = p.description();
+            initialSceneJson= p.sceneJson();
+        } else {
+            var p = collabModel.getProjectAt(row);
+            projectId       = p.id();
+            projectName     = p.name();
+            projectDesc     = p.description();
+            initialSceneJson= p.sceneJson();
+        }
+
+        try {
+            SceneEditorPanel editorPanel = new SceneEditorPanel(
+                    initialSceneJson,
+                    newJson -> {
+                        SwingWorker<Void,Void> saveWorker = new SwingWorker<>() {
+                            @Override protected Void doInBackground() throws Exception {
+                                service.updateProject(
+                                        projectId,
+                                        projectName,
+                                        projectDesc,
+                                        newJson
+                                );
+                                return null;
+                            }
+                            @Override protected void done() {
+                                try {
+                                    get();
+                                    loadProjects();
+                                    JOptionPane.showMessageDialog(
+                                            ProjectsTab.this,
+                                            "Scene saved!",
+                                            "Success",
+                                            JOptionPane.INFORMATION_MESSAGE
+                                    );
+                                } catch (Exception ex) {
+                                    JOptionPane.showMessageDialog(
+                                            ProjectsTab.this,
+                                            "Save failed:\n" + ex.getMessage(),
+                                            "Error",
+                                            JOptionPane.ERROR_MESSAGE
+                                    );
+                                }
+                            }
+                        };
+                        saveWorker.execute();
+                    }
+            );
+
+            JDialog dlg = new JDialog(
+                    SwingUtilities.getWindowAncestor(this),
+                    "Edit Scene — " + projectName,
+                    Dialog.ModalityType.APPLICATION_MODAL
+            );
+            dlg.getContentPane().add(editorPanel);
+            dlg.pack();
+            dlg.setLocationRelativeTo(this);
+            dlg.setVisible(true);
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Could not open scene editor:\n" + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
 
     private enum Mode {
         OWNED("My Projects"), COLLAB("Collaborations");

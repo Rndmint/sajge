@@ -1,0 +1,46 @@
+{
+  "id": 0,
+  "mesh": {
+    "vertices": [
+      [-1,  1.618,  0],
+      [ 1,  1.618,  0],
+      [-1, -1.618,  0],
+      [ 1, -1.618,  0],
+      [ 0, -1,   1.618],
+      [ 0,  1,   1.618],
+      [ 0, -1,  -1.618],
+      [ 0,  1,  -1.618],
+      [ 1.618,  0, -1],
+      [ 1.618,  0,  1],
+      [-1.618,  0, -1],
+      [-1.618,  0,  1]
+    ],
+    "triangles": [
+      { "id":  0, "indices": [0, 11, 5],  "normal": [ 0.0, 0.447,  0.894], "color": "#FFFFFF" },
+      { "id":  1, "indices": [0, 5, 1],   "normal": [ 0.894, 0.447,  0.0], "color": "#FFFFFF" },
+      { "id":  2, "indices": [0, 1, 7],   "normal": [ 0.0, 0.447, -0.894], "color": "#FFFFFF" },
+      { "id":  3, "indices": [0, 7, 10],  "normal": [-0.894, 0.447,  0.0], "color": "#FFFFFF" },
+      { "id":  4, "indices": [0, 10,11],  "normal": [ 0.0, 0.447,  0.894], "color": "#FFFFFF" },
+
+      { "id":  5, "indices": [1, 5, 9],   "normal": [ 0.894, 0.0,    0.447], "color": "#FFFFFF" },
+      { "id":  6, "indices": [5, 11,4],   "normal": [ 0.0,   0.0,   1.0],   "color": "#FFFFFF" },
+      { "id":  7, "indices": [11,10,2],   "normal": [-0.447, 0.0,    0.894], "color": "#FFFFFF" },
+      { "id":  8, "indices": [10,7,6],    "normal": [ 0.0,   0.0,   -1.0],   "color": "#FFFFFF" },
+      { "id":  9, "indices": [7, 1, 8],    "normal": [ 0.894, 0.0,   -0.447], "color": "#FFFFFF" },
+
+      { "id": 10, "indices": [3, 9, 4],    "normal": [ 0.0,  -0.894,  0.447], "color": "#FFFFFF" },
+      { "id": 11, "indices": [3, 4, 2],    "normal": [ 0.0,  -1.0,    0.0],   "color": "#FFFFFF" },
+      { "id": 12, "indices": [3, 2, 6],    "normal": [-0.894, 0.0,   -0.447], "color": "#FFFFFF" },
+      { "id": 13, "indices": [3, 6, 8],    "normal": [ 0.0,   0.0,    1.0],   "color": "#FFFFFF" },
+      { "id": 14, "indices": [3, 8, 9],    "normal": [ 0.447,  0.0,   -0.894], "color": "#FFFFFF" },
+
+      { "id": 15, "indices": [4, 9, 5],    "normal": [ 0.0,   0.894,   0.447], "color": "#FFFFFF" },
+      { "id": 16, "indices": [2, 4, 11],   "normal": [-0.447,  0.0,    0.894], "color": "#FFFFFF" },
+      { "id": 17, "indices": [6, 2, 10],   "normal": [ 0.0,   0.0,   -1.0],   "color": "#FFFFFF" },
+      { "id": 18, "indices": [8, 6, 7],    "normal": [ 0.894,  0.0,   -0.447], "color": "#FFFFFF" },
+      { "id": 19, "indices": [9, 8, 1],    "normal": [ 0.0,  -0.894, -0.447], "color": "#FFFFFF" }
+    ]
+  },
+  "transform": { "position":[0,0,0], "rotation":[0,0,0], "scale":[1,1,1] },
+  "material": { "color":"#FFA500" }
+}

@@ -4,11 +4,9 @@ import javax.swing.SwingUtilities;
 
 public class Main {
     public static void main(String[] args) {
-        String initialJson = "{}";
-        String json = initialJson;
         SwingUtilities.invokeLater(() -> {
             try {
-                new SceneEditorApp(json);
+                new SceneEditorApp("{}");
             } catch (Exception e) {
                 e.printStackTrace();
             }

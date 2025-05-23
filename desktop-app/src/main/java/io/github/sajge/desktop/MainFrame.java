@@ -16,8 +16,8 @@ public class MainFrame extends JFrame {
     private final AuthPanel authPanel;
     private final AppPanel appPanel;
 
-    public MainFrame() {
-        super("Sajge Swing Client");
+    public MainFrame() throws Exception {
+        super("Sajge");
         this.service = new ClientService();
         this.authPanel = new AuthPanel(this, service);
         this.appPanel = new AppPanel(this, service);
