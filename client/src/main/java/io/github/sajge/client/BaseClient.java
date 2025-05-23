@@ -13,8 +13,8 @@ public class BaseClient<S, E> {
     private static final Logger logger = Logger.get(BaseClient.class);
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
-    private static final String HOST = "localhost";
-    private static final int PORT = 8080;
+    private static final String HOST;
+    private static final int PORT;
 
     protected S lastSuccess;
     protected E lastError;
@@ -87,4 +87,13 @@ public class BaseClient<S, E> {
     public E getLastError() {
         return lastError;
     }
+
+
+    static {
+        ClientConfig cfg = new ClientConfig("client_config.yaml");
+        HOST = cfg.getServerHost();
+        PORT = cfg.getServerPort();
+        logger.info("BaseClient configured for {}:{}", HOST, PORT);
+    }
+
 }

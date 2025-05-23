@@ -2,9 +2,10 @@ DBHost: "172.31.253.73"
 DBPort: 3306
 DBUser: "root"
 DBPassword: "wsxedc"
-DBName: "hello_schema"
+DBName: "sajge_db"
 DBConnectionPoolSize: 5
 DBQueryTimeoutMillis: 5000
-ServerPort: 8080
-ServerSocketTimeoutMillis: 60000
-ThreadPoolSize: 5
+
+serverPort: 8080
+serverSocketTimeoutMillis: 60000
+threadPoolSize: 5

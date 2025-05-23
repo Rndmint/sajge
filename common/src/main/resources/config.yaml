@@ -1,8 +1,0 @@
-server:
-  host: "llll"
-  port: 1234
-
-database:
-  url: "urlfordb"
-  user: "someone"
-  password: "*****"

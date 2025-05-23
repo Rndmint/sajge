@@ -1,11 +1,5 @@
 package io.github.sajge.client;
 
-//██████  ███████ ██   ██  ██████  ██      ██████  ██
-//██   ██ ██      ██   ██ ██    ██ ██      ██   ██ ██
-//██████  █████   ███████ ██    ██ ██      ██   ██ ██
-//██   ██ ██      ██   ██ ██    ██ ██      ██   ██
-//██████  ███████ ██   ██  ██████  ███████ ██████  ██
-
 import io.github.sajge.client.accounts.*;
 import io.github.sajge.client.check.CheckSessionClient;
 import io.github.sajge.client.collaborations.*;
@@ -98,13 +92,23 @@ public class ClientService {
             listOwnedProjectsWithCollaboratorsClient =
             new ListOwnedProjectsWithCollaboratorsClient();
 
+    private String lastErrorMessage;
+
+    public String getLastErrorMessage() {
+        return lastErrorMessage;
+    }
+
     public String getToken() {
         return token;
     }
 
     public boolean signup(String username, String password) throws Exception {
         signupClient.send(username, password);
-        return signupClient.isSuccess();
+        if (!signupClient.isSuccess()) {
+            lastErrorMessage = signupClient.getLastError().message();
+            return false;
+        }
+        return true;
     }
 
     public boolean login(String username, String password) throws Exception {

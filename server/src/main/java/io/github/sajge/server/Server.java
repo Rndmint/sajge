@@ -10,6 +10,7 @@ import io.github.sajge.server.accounts.users.ListUsersDto;
 import io.github.sajge.server.accounts.users.ListUsersHandler;
 import io.github.sajge.server.accounts.users.UserDao;
 import io.github.sajge.server.accounts.users.UserService;
+import io.github.sajge.server.config.ServerConfig;
 import io.github.sajge.server.echos.EchoDto;
 import io.github.sajge.server.accounts.logins.LoginDao;
 import io.github.sajge.database.DBConnectionPool;
@@ -62,10 +63,10 @@ import static java.util.Map.entry;
 
 public class Server {
     private static final Logger logger = Logger.get(Server.class);
-    private static final int SERVER_PORT = 8080;
-    private static final int SERVER_ACCEPT_TIMEOUT_MS = 5000;
-    private static final int SOCKET_READ_TIMEOUT_MS = 5000;
-    private static final int WORKER_POOL_SIZE = 4;
+    private static final int SERVER_PORT;
+    private static final int SERVER_ACCEPT_TIMEOUT_MS;
+    private static final int SOCKET_READ_TIMEOUT_MS;
+    private static final int WORKER_POOL_SIZE;
 
     public void start() {
         try {
@@ -204,17 +205,26 @@ public class Server {
 
     static {
         try {
+            ServerConfig cfg = new ServerConfig("server_config.yaml");
+
             DBConnectionPool.INSTANCE.init(
-                    "172.31.253.73",
-                    3306,
-                    "sajge_db",
-                    5000,
-                    "root",
-                    "wsxedc",
-                    5
+                    cfg.getDBHost(),
+                    cfg.getDBPort(),
+                    cfg.getDBName(),
+                    cfg.getDBQueryTimeoutMillis(),
+                    cfg.getDBUser(),
+                    cfg.getDBPassword(),
+                    cfg.getDBConnectionPoolSize()
             );
-        } catch (SQLException e) {
-            e.printStackTrace();
+
+            SERVER_PORT = cfg.getServerPort();
+            SERVER_ACCEPT_TIMEOUT_MS = cfg.getServerSocketTimeoutMillis();
+            SOCKET_READ_TIMEOUT_MS = cfg.getServerSocketTimeoutMillis();
+            WORKER_POOL_SIZE = cfg.getThreadPoolSize();
+
+        } catch (Exception e) {
+            logger.error("Failed to load server configuration", e);
+            throw new ExceptionInInitializerError(e);
         }
     }
 }

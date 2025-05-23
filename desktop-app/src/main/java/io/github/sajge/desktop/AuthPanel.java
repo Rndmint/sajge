@@ -73,17 +73,25 @@ public class AuthPanel extends JPanel {
                 setButtonsEnabled(true);
                 try {
                     if (get()) {
-                        JOptionPane.showMessageDialog(AuthPanel.this,
-                                "Signup successful—please log in.");
+                        JOptionPane.showMessageDialog(
+                                AuthPanel.this,
+                                "Signup successful—please log in."
+                        );
                     } else {
-                        JOptionPane.showMessageDialog(AuthPanel.this,
-                                "Signup failed (username may be taken)",
-                                "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(
+                                AuthPanel.this,
+                                service.getLastErrorMessage(),
+                                "Signup failed",
+                                JOptionPane.ERROR_MESSAGE
+                        );
                     }
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(AuthPanel.this,
+                    JOptionPane.showMessageDialog(
+                            AuthPanel.this,
                             "Error: " + ex.getMessage(),
-                            "Error", JOptionPane.ERROR_MESSAGE);
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
                 }
             }
         }.execute();
