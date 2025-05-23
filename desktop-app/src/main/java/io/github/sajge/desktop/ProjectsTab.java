@@ -8,11 +8,15 @@ import io.github.sajge.client.projects.ListOwnedProjectsWithCollaboratorsClient.
 import io.github.sajge.engine.SceneEditorPanel;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class ProjectsTab extends JPanel {
     private final ClientService service;
@@ -38,13 +42,17 @@ public class ProjectsTab extends JPanel {
 
 
     private final JButton editSceneBtn = new JButton("Edit Scene");
-
-
+    private final JTextField searchField = new JTextField(15);
     private Mode currentMode = Mode.OWNED;
+    private TableRowSorter<AbstractTableModel> rowSorter;
 
     public ProjectsTab(ClientService service) {
         this.service = service;
         this.projectTable = new JTable(ownedModel);
+
+        rowSorter = new TableRowSorter<>(ownedModel);
+        projectTable.setRowSorter(rowSorter);
+
         initUI();
     }
 
@@ -57,6 +65,32 @@ public class ProjectsTab extends JPanel {
         top.add(new JLabel("Show:"));
         top.add(modeCombo);
         add(top, BorderLayout.NORTH);
+
+        top.add(new JLabel("Search:"));
+        top.add(searchField);
+
+        searchField.getDocument().addDocumentListener(new DocumentListener() {
+            private void update() {
+                String text = searchField.getText().trim();
+                if (text.isEmpty()) {
+                    rowSorter.setRowFilter(null);
+                } else {
+                    rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + Pattern.quote(text)));
+                }
+            }
+
+            public void insertUpdate(DocumentEvent e) {
+                update();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                update();
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+                update();
+            }
+        });
 
         projectTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane tableScroll = new JScrollPane(projectTable);
@@ -194,10 +228,13 @@ public class ProjectsTab extends JPanel {
                     if (currentMode == Mode.OWNED) {
                         ownedModel.setProjects((List<OwnedProjectDto>) get());
                         projectTable.setModel(ownedModel);
+                        rowSorter.setModel(ownedModel);
                     } else {
                         collabModel.setProjects((List<CollaboratedProjectDto>) get());
                         projectTable.setModel(collabModel);
+                        rowSorter.setModel(collabModel);
                     }
+                    projectTable.setRowSorter(rowSorter);
                 } catch (Exception ignored) {
                 }
             }
@@ -478,24 +515,25 @@ public class ProjectsTab extends JPanel {
         final String initialSceneJson;
         if (currentMode == Mode.OWNED) {
             var p = ownedModel.getProjectAt(row);
-            projectId       = p.id();
-            projectName     = p.name();
-            projectDesc     = p.description();
-            initialSceneJson= p.sceneJson();
+            projectId = p.id();
+            projectName = p.name();
+            projectDesc = p.description();
+            initialSceneJson = p.sceneJson();
         } else {
             var p = collabModel.getProjectAt(row);
-            projectId       = p.id();
-            projectName     = p.name();
-            projectDesc     = p.description();
-            initialSceneJson= p.sceneJson();
+            projectId = p.id();
+            projectName = p.name();
+            projectDesc = p.description();
+            initialSceneJson = p.sceneJson();
         }
 
         try {
             SceneEditorPanel editorPanel = new SceneEditorPanel(
                     initialSceneJson,
                     newJson -> {
-                        SwingWorker<Void,Void> saveWorker = new SwingWorker<>() {
-                            @Override protected Void doInBackground() throws Exception {
+                        SwingWorker<Void, Void> saveWorker = new SwingWorker<>() {
+                            @Override
+                            protected Void doInBackground() throws Exception {
                                 service.updateProject(
                                         projectId,
                                         projectName,
@@ -504,7 +542,9 @@ public class ProjectsTab extends JPanel {
                                 );
                                 return null;
                             }
-                            @Override protected void done() {
+
+                            @Override
+                            protected void done() {
                                 try {
                                     get();
                                     loadProjects();

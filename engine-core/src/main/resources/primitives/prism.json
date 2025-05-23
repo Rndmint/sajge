@@ -1,0 +1,21 @@
+{
+  "id":0,
+  "mesh":{
+    "vertices":[
+      [0,0,0],[1,0,0],[0.5,1,0],
+      [0,0,1],[1,0,1],[0.5,1,1]
+    ],
+    "triangles":[
+      {"id":0,"indices":[0,1,2],"normal":[0,0,-1],"color":"#FFFFFF"},
+      {"id":1,"indices":[3,5,4],"normal":[0,0,1],"color":"#FFFFFF"},
+      {"id":2,"indices":[0,4,1],"normal":[0,-1,0],"color":"#FFFFFF"},
+      {"id":3,"indices":[0,3,4],"normal":[0,-1,0],"color":"#FFFFFF"},
+      {"id":4,"indices":[0,2,5],"normal":[-0.866,0,0.5],"color":"#FFFFFF"},
+      {"id":5,"indices":[0,5,3],"normal":[-0.866,0,0.5],"color":"#FFFFFF"},
+      {"id":6,"indices":[1,4,5],"normal":[0.866,0,0.5],"color":"#FFFFFF"},
+      {"id":7,"indices":[1,5,2],"normal":[0.866,0,0.5],"color":"#FFFFFF"}
+    ]
+  },
+  "transform":{"position":[0,0,0],"rotation":[0,0,0],"scale":[1,1,1]},
+  "material":{"color":"#FFA500"}
+}

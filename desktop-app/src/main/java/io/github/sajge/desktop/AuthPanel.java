@@ -11,6 +11,10 @@ public class AuthPanel extends JPanel {
 
     private final JTextField userField = new JTextField(15);
     private final JPasswordField passField = new JPasswordField(15);
+
+    private final char defaultEchoChar = passField.getEchoChar();
+    private final JCheckBox showPassword = new JCheckBox("Show password");
+
     private final JButton signupBtn = new JButton("Sign Up");
     private final JButton loginBtn = new JButton("Log In");
 
@@ -24,6 +28,7 @@ public class AuthPanel extends JPanel {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.EAST;
@@ -42,14 +47,30 @@ public class AuthPanel extends JPanel {
         gbc.anchor = GridBagConstraints.WEST;
         add(passField, gbc);
 
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.anchor = GridBagConstraints.WEST;
+        add(showPassword, gbc);
+
+        showPassword.addActionListener(e -> {
+            if (showPassword.isSelected()) {
+                passField.setEchoChar((char) 0);
+            } else {
+                passField.setEchoChar(defaultEchoChar);
+            }
+        });
+
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         btnPanel.add(signupBtn);
         btnPanel.add(loginBtn);
 
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 3;
         gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
         add(btnPanel, gbc);
+
+        gbc.gridwidth = 1;
 
         signupBtn.addActionListener(e -> doSignup());
         loginBtn.addActionListener(e -> doLogin());
@@ -77,6 +98,10 @@ public class AuthPanel extends JPanel {
                                 AuthPanel.this,
                                 "Signup successful—please log in."
                         );
+                        userField.setText("");
+                        passField.setText("");
+                        showPassword.setSelected(false);
+                        passField.setEchoChar(defaultEchoChar);
                     } else {
                         JOptionPane.showMessageDialog(
                                 AuthPanel.this,
