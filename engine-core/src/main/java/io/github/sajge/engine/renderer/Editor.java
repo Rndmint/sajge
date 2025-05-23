@@ -47,7 +47,7 @@ public class Editor {
         log.info("Selected modelId={} triangleId={}", modelId, triangleId);
     }
 
-    private Model getSelectedModel() {
+    public Model getSelectedModel() {
         if (selectedModelId < 0) {
             log.warn("No model selected");
             return null;
@@ -112,7 +112,8 @@ public class Editor {
     public void addObject(Model model) {
         log.debug("Adding object {} to scene", model);
         engine.getScene().addModel(model);
-        log.info("Object {} added", model);
+        engine.getScene().reindexModels();
+        log.info("Object {} added and models reindexed", model);
         engine.render();
     }
 
@@ -121,9 +122,10 @@ public class Editor {
         Model model = getSelectedModel();
         if (model != null) {
             engine.getScene().removeModel(model);
-            log.info("Removed model {}", selectedModelId);
+            engine.getScene().reindexModels();
             selectedModelId = -1;
             selectedTriangleId = -1;
+            log.info("Model removed and models reindexed");
             engine.render();
         }
     }
@@ -153,4 +155,77 @@ public class Editor {
         selectedModelId = -1;
         selectedTriangleId = -1;
     }
+
+    public void translateSelectedX(float dx) {
+        translateSelected(dx, 0f, 0f);
+    }
+
+    public void translateSelectedY(float dy) {
+        translateSelected(0f, dy, 0f);
+    }
+
+    public void translateSelectedZ(float dz) {
+        translateSelected(0f, 0f, dz);
+    }
+
+    public void rotateSelectedX(float rx) {
+        rotateSelected(rx, 0f, 0f);
+    }
+
+    public void rotateSelectedY(float ry) {
+        rotateSelected(0f, ry, 0f);
+    }
+
+    public void rotateSelectedZ(float rz) {
+        rotateSelected(0f, 0f, rz);
+    }
+
+    public void scaleSelectedX(float sx) {
+        scaleSelected(sx, 1f, 1f);
+    }
+
+    public void scaleSelectedY(float sy) {
+        scaleSelected(1f, sy, 1f);
+    }
+
+    public void scaleSelectedZ(float sz) {
+        scaleSelected(1f, 1f, sz);
+    }
+
+    public void setCameraPositionX(float x) {
+        var cam = engine.getScene().getCamera();
+        Vec3 pos = cam.getTransform().getPosition();
+        setCameraTransform(new Vec3(x, pos.y, pos.z), cam.getTransform().getRotation());
+    }
+
+    public void setCameraPositionY(float y) {
+        var cam = engine.getScene().getCamera();
+        Vec3 pos = cam.getTransform().getPosition();
+        setCameraTransform(new Vec3(pos.x, y, pos.z), cam.getTransform().getRotation());
+    }
+
+    public void setCameraPositionZ(float z) {
+        var cam = engine.getScene().getCamera();
+        Vec3 pos = cam.getTransform().getPosition();
+        setCameraTransform(new Vec3(pos.x, pos.y, z), cam.getTransform().getRotation());
+    }
+
+    public void setCameraRotationX(float rx) {
+        var cam = engine.getScene().getCamera();
+        Vec3 rot = cam.getTransform().getRotation();
+        setCameraTransform(cam.getTransform().getPosition(), new Vec3(rx, rot.y, rot.z));
+    }
+
+    public void setCameraRotationY(float ry) {
+        var cam = engine.getScene().getCamera();
+        Vec3 rot = cam.getTransform().getRotation();
+        setCameraTransform(cam.getTransform().getPosition(), new Vec3(rot.x, ry, rot.z));
+    }
+
+    public void setCameraRotationZ(float rz) {
+        var cam = engine.getScene().getCamera();
+        Vec3 rot = cam.getTransform().getRotation();
+        setCameraTransform(cam.getTransform().getPosition(), new Vec3(rot.x, rot.y, rz));
+    }
+
 }

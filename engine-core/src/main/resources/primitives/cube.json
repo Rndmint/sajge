@@ -1,0 +1,37 @@
+{
+  "id": 0,
+  "mesh": {
+    "vertices": [
+      [-1, -1, -1],
+      [ 1, -1, -1],
+      [ 1,  1, -1],
+      [-1,  1, -1],
+      [-1, -1,  1],
+      [ 1, -1,  1],
+      [ 1,  1,  1],
+      [-1,  1,  1]
+    ],
+    "triangles": [
+      { "id":  0, "indices": [0, 1, 2], "normal": [ 0,  0, -1], "color": "#FFFFFF" },
+      { "id":  1, "indices": [0, 2, 3], "normal": [ 0,  0, -1], "color": "#FFFFFF" },
+      { "id":  2, "indices": [4, 6, 5], "normal": [ 0,  0,  1], "color": "#FFFFFF" },
+      { "id":  3, "indices": [4, 7, 6], "normal": [ 0,  0,  1], "color": "#FFFFFF" },
+      { "id":  4, "indices": [0, 4, 5], "normal": [ 0, -1,  0], "color": "#FFFFFF" },
+      { "id":  5, "indices": [0, 5, 1], "normal": [ 0, -1,  0], "color": "#FFFFFF" },
+      { "id":  6, "indices": [3, 2, 6], "normal": [ 0,  1,  0], "color": "#FFFFFF" },
+      { "id":  7, "indices": [3, 6, 7], "normal": [ 0,  1,  0], "color": "#FFFFFF" },
+      { "id":  8, "indices": [1, 5, 6], "normal": [ 1,  0,  0], "color": "#FFFFFF" },
+      { "id":  9, "indices": [1, 6, 2], "normal": [ 1,  0,  0], "color": "#FFFFFF" },
+      { "id": 10, "indices": [0, 3, 7], "normal": [-1,  0,  0], "color": "#FFFFFF" },
+      { "id": 11, "indices": [0, 7, 4], "normal": [-1,  0,  0], "color": "#FFFFFF" }
+    ]
+  },
+  "transform": {
+    "position": [0, 0, 0],
+    "rotation": [0, 0, 0],
+    "scale":    [1, 1, 1]
+  },
+  "material": {
+    "color": "#FFA500"
+  }
+}

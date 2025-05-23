@@ -1,0 +1,25 @@
+{
+  "id": 0,
+  "mesh": {
+    "vertices": [
+      [ 1,  1,  1],
+      [-1, -1,  1],
+      [-1,  1, -1],
+      [ 1, -1, -1]
+    ],
+    "triangles": [
+      { "id": 0, "indices": [0, 1, 2], "normal": [ 0.0,  0.816,  0.577], "color": "#FFFFFF" },
+      { "id": 1, "indices": [0, 3, 1], "normal": [ 0.816,  0.0,  0.577], "color": "#FFFFFF" },
+      { "id": 2, "indices": [0, 2, 3], "normal": [ 0.577,  0.816,  0.0], "color": "#FFFFFF" },
+      { "id": 3, "indices": [1, 3, 2], "normal": [ 0.577, -0.816,  0.0], "color": "#FFFFFF" }
+    ]
+  },
+  "transform": {
+    "position": [0, 0, 0],
+    "rotation": [0, 0, 0],
+    "scale":    [1, 1, 1]
+  },
+  "material": {
+    "color": "#FFA500"
+  }
+}
